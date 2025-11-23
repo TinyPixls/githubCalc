@@ -199,6 +199,20 @@
                         Minute multipliers: Linux 1x, Windows 2x, macOS 10x. Overage: Linux $0.008/min, Windows $0.016/min, macOS $0.08/min
                     </div>
                     <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="actions-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
                         <div class="toggle-option">
                             <span class="toggle-label">Primarily Public Repositories</span>
                             <div class="toggle-wrapper">
@@ -220,6 +234,7 @@
                             <span id="total-actual-minutes"></span> actual minutes =
                             <span id="total-billed-minutes"></span> billed minutes
                         </div>
+                        </div><!-- end section-main-content -->
                     </div>
                 </div>
 
