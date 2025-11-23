@@ -48,6 +48,13 @@
                         AI-powered code completion and chat assistance. Plans start at Free for individuals, $19/month for organizations
                     </div>
                     <div class="section-content">
+                        <!-- Number of Copilot Users -->
+                        <div class="input-group" style="margin-bottom: 1.5rem;">
+                            <label for="copilot-users">Number of Copilot Users (leave empty to use team size)</label>
+                            <input type="number" id="copilot-users" placeholder="Leave empty to use team size" min="0" max="100000">
+                            <span class="validation-error" id="copilot-users-error" style="display: none;">Cannot exceed team size</span>
+                        </div>
+
                         <!-- Individual Plans -->
                         <div id="copilot-individual-plans" class="copilot-plans-section">
                             <h4 class="copilot-section-title">Individual Plans</h4>
@@ -78,7 +85,7 @@
                                 </label>
                             </div>
                             <div id="copilot-individual-disabled-message" class="copilot-disabled-message" style="display: none;">
-                                Individual plans are only available when Team Size and Number of Copilot Users are both set to 1 or less.
+                                Individual plans are only available for a single user. Set Number of Copilot Users to 1 or less.
                             </div>
                         </div>
 
@@ -102,11 +109,6 @@
                                         <div class="copilot-plan-price">$39.00 USD/month per developer</div>
                                     </div>
                                 </label>
-                            </div>
-                            <div class="input-group">
-                                <label for="copilot-users">Number of Copilot Users</label>
-                                <input type="number" id="copilot-users" placeholder="Enter number of users" min="0" max="100000">
-                                <span class="validation-error" id="copilot-users-error" style="display: none;">Cannot exceed team size</span>
                             </div>
                         </div>
 

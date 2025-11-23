@@ -247,14 +247,17 @@ class GitHubPricingCalculator {
     }
 
     updateCopilotPlanAvailability() {
-        const users = parseInt(document.getElementById('users').value) || 1;
+        const teamSize = parseInt(document.getElementById('users').value) || 1;
         const copilotUsers = parseInt(document.getElementById('copilot-users').value) || 0;
         const individualPlans = document.getElementById('copilot-individual-plans');
         const disabledMessage = document.getElementById('copilot-individual-disabled-message');
         const individualRadios = document.querySelectorAll('input[name="copilot-plan"][value^="individual-"]');
 
-        // Disable individual plans if team size > 1 OR copilot users > 1
-        if (users > 1 || copilotUsers > 1) {
+        // Use copilot users if specified (> 0), otherwise fall back to team size
+        const effectiveCopilotUsers = copilotUsers > 0 ? copilotUsers : teamSize;
+
+        // Disable individual plans only when effective copilot users > 1
+        if (effectiveCopilotUsers > 1) {
             // Disable individual plans
             individualRadios.forEach(radio => {
                 radio.disabled = true;
@@ -657,6 +660,9 @@ class GitHubPricingCalculator {
         let copilotOverageCost = 0;
         let copilotPlanName = '';
 
+        // Use copilot users if specified (> 0), otherwise fall back to team size
+        const effectiveCopilotUsers = usage.copilotUsers > 0 ? usage.copilotUsers : usage.users;
+
         if (usage.copilotPlan) {
             switch (usage.copilotPlan) {
                 case 'individual-free':
@@ -672,11 +678,11 @@ class GitHubPricingCalculator {
                     copilotPlanName = 'Individual Pro+';
                     break;
                 case 'org-business':
-                    copilotBaseCost = PRICING.copilot.orgBusiness * usage.copilotUsers;
+                    copilotBaseCost = PRICING.copilot.orgBusiness * effectiveCopilotUsers;
                     copilotPlanName = 'Business';
                     break;
                 case 'org-enterprise':
-                    copilotBaseCost = PRICING.copilot.orgEnterprise * usage.copilotUsers;
+                    copilotBaseCost = PRICING.copilot.orgEnterprise * effectiveCopilotUsers;
                     copilotPlanName = 'Enterprise';
                     break;
             }
@@ -692,7 +698,7 @@ class GitHubPricingCalculator {
             baseCost: copilotBaseCost,
             overageRequests: usage.copilotOverageRequests,
             overageCost: copilotOverageCost,
-            users: usage.copilotUsers
+            users: effectiveCopilotUsers
         };
 
         // GitHub Actions calculation
