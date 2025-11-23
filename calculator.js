@@ -787,7 +787,8 @@ class GitHubPricingCalculator {
                 ${badgeHtml}
             </div>
             <div class="plan-base-cost">
-                ${baseCostDisplay}<span class="period">/month</span>
+                <div class="base-cost-label">Base Plan Cost</div>
+                <div class="base-cost-amount">${baseCostDisplay}<span class="period">/month</span></div>
             </div>
             ${unavailableReason}
             <div class="cost-breakdown">

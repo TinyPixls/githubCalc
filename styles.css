@@ -434,10 +434,22 @@ select:focus {
 }
 
 .plan-base-cost {
+    margin-bottom: 0.5rem;
+}
+
+.base-cost-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.base-cost-amount {
     font-size: 2rem;
     font-weight: 700;
     color: var(--color-text);
-    margin-bottom: 0.5rem;
 }
 
 .plan-base-cost .period {
@@ -549,7 +561,7 @@ select:focus {
         padding: 1.5rem;
     }
 
-    .plan-base-cost {
+    .base-cost-amount {
         font-size: 1.5rem;
     }
 }
