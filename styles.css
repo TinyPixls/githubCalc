@@ -120,9 +120,36 @@ h1 {
 .section h3 {
     font-size: 1.1rem;
     margin-bottom: 0;
-    color: var(--color-accent);
+    color: #3d4449;
     font-weight: 600;
     flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-icon {
+    flex-shrink: 0;
+}
+
+.section-info {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    padding: 0.75rem 0;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin-top 0.3s ease-out, padding 0.3s ease-out;
+    max-height: 100px;
+    opacity: 1;
+}
+
+.section.collapsed .section-info {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .section-checkbox-wrapper {
