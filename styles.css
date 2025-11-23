@@ -48,17 +48,13 @@ header {
     text-align: center;
     margin-bottom: 3rem;
     padding: 2rem;
-    background: var(--color-bg-secondary);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
 }
 
 h1 {
     font-size: 2.5rem;
     color: var(--color-text);
     margin-bottom: 0.5rem;
-    font-weight: 600;
+    font-weight: 300;
 }
 
 .subtitle {
@@ -74,11 +70,7 @@ h1 {
 }
 
 .panel {
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
     padding: 2rem;
-    box-shadow: var(--shadow-md);
 }
 
 .panel h2 {
@@ -271,11 +263,25 @@ select:focus {
     box-shadow: var(--shadow-md);
 }
 
+.runner-card.collapsed .runner-inputs {
+    display: none;
+}
+
 .runner-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+}
+
+.runner-card.collapsed .runner-header {
+    margin-bottom: 0;
+}
+
+.runner-header-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .runner-title {
@@ -287,6 +293,46 @@ select:focus {
 .runner-inputs {
     display: grid;
     gap: 0.75rem;
+}
+
+.btn-collapse {
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 32px;
+}
+
+.btn-collapse:hover {
+    background: var(--color-bg);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.btn-secondary-full {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--color-panel);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 1rem;
+}
+
+.btn-secondary-full:hover {
+    background: rgba(9, 105, 218, 0.08);
+}
+
+.btn-secondary-full:active {
+    transform: scale(0.98);
 }
 
 .usage-summary {

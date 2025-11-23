@@ -139,8 +139,14 @@ class GitHubPricingCalculator {
         const addRunnerBtn = document.getElementById('add-runner-btn');
         addRunnerBtn.addEventListener('click', () => this.addRunner());
 
+        const addRunnerBtnBottom = document.getElementById('add-runner-btn-bottom');
+        addRunnerBtnBottom.addEventListener('click', () => this.addRunner());
+
         const addCodespaceBtn = document.getElementById('add-codespace-btn');
         addCodespaceBtn.addEventListener('click', () => this.addCodespace());
+
+        const addCodespaceBtnBottom = document.getElementById('add-codespace-btn-bottom');
+        addCodespaceBtnBottom.addEventListener('click', () => this.addCodespace());
 
         // Section collapse/expand with checkboxes
         document.querySelectorAll('.section-checkbox').forEach(checkbox => {
@@ -151,6 +157,8 @@ class GitHubPricingCalculator {
                 } else {
                     section.classList.add('collapsed');
                 }
+                // Trigger recalculation when section is toggled
+                this.calculate();
             });
         });
 
@@ -174,7 +182,10 @@ class GitHubPricingCalculator {
         runnerCard.innerHTML = `
             <div class="runner-header">
                 <span class="runner-title">Runner #${runnerId + 1}</span>
-                <button type="button" class="btn-remove" data-runner-id="${runnerId}">Remove</button>
+                <div class="runner-header-buttons">
+                    <button type="button" class="btn-collapse" data-runner-id="${runnerId}">▼</button>
+                    <button type="button" class="btn-remove" data-runner-id="${runnerId}">Remove</button>
+                </div>
             </div>
             <div class="runner-inputs">
                 <div class="input-group">
@@ -197,6 +208,13 @@ class GitHubPricingCalculator {
         `;
 
         container.appendChild(runnerCard);
+
+        // Add collapse listener
+        const collapseBtn = runnerCard.querySelector('.btn-collapse');
+        collapseBtn.addEventListener('click', () => {
+            runnerCard.classList.toggle('collapsed');
+            collapseBtn.textContent = runnerCard.classList.contains('collapsed') ? '▶' : '▼';
+        });
 
         // Add remove listener
         const removeBtn = runnerCard.querySelector('.btn-remove');
@@ -236,7 +254,10 @@ class GitHubPricingCalculator {
         codespaceCard.innerHTML = `
             <div class="runner-header">
                 <span class="runner-title">Machine #${codespaceId + 1}</span>
-                <button type="button" class="btn-remove" data-codespace-id="${codespaceId}">Remove</button>
+                <div class="runner-header-buttons">
+                    <button type="button" class="btn-collapse" data-codespace-id="${codespaceId}">▼</button>
+                    <button type="button" class="btn-remove" data-codespace-id="${codespaceId}">Remove</button>
+                </div>
             </div>
             <div class="runner-inputs">
                 <div class="input-group">
@@ -261,6 +282,13 @@ class GitHubPricingCalculator {
         `;
 
         container.appendChild(codespaceCard);
+
+        // Add collapse listener
+        const collapseBtn = codespaceCard.querySelector('.btn-collapse');
+        collapseBtn.addEventListener('click', () => {
+            codespaceCard.classList.toggle('collapsed');
+            collapseBtn.textContent = codespaceCard.classList.contains('collapsed') ? '▶' : '▼';
+        });
 
         const removeBtn = codespaceCard.querySelector('.btn-remove');
         removeBtn.addEventListener('click', () => this.removeCodespace(codespaceId));
