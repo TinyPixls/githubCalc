@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pricing Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GitHub Pricing Calculator</h1>
+            <p class="subtitle">Compare plans based on your actual usage</p>
+        </header>
+
+        <div class="calculator-grid">
+            <!-- Usage Input Panel -->
+            <div class="panel usage-panel">
+                <h2>Your Expected Usage</h2>
+
+                <div class="section">
+                    <h3>Team Size</h3>
+                    <div class="input-group">
+                        <label for="users">Number of Users</label>
+                        <input type="number" id="users" value="5" min="1" max="10000">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>GitHub Actions</h3>
+                    <div class="input-group">
+                        <label for="jobs-per-day">Jobs per Day</label>
+                        <input type="number" id="jobs-per-day" value="10" min="0" max="1000">
+                    </div>
+                    <div class="input-group">
+                        <label for="job-duration">Average Job Duration (minutes)</label>
+                        <input type="number" id="job-duration" value="5" min="0" max="360">
+                    </div>
+                    <div class="input-group">
+                        <label for="runner-type">Runner Type</label>
+                        <select id="runner-type">
+                            <option value="linux">Ubuntu Linux (1x multiplier)</option>
+                            <option value="windows">Windows (2x multiplier)</option>
+                            <option value="macos">macOS (10x multiplier)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="public-repos">
+                            <input type="checkbox" id="public-repos">
+                            Primarily public repositories (Actions are free)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>GitHub Packages</h3>
+                    <div class="input-group">
+                        <label for="package-storage">Storage Needed (GB)</label>
+                        <input type="number" id="package-storage" value="2" min="0" max="10000" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="package-transfer">Data Transfer per Month (GB)</label>
+                        <input type="number" id="package-transfer" value="5" min="0" max="10000" step="0.1">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Git LFS</h3>
+                    <div class="input-group">
+                        <label for="lfs-storage">Storage Needed (GB)</label>
+                        <input type="number" id="lfs-storage" value="5" min="0" max="10000" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="lfs-bandwidth">Bandwidth per Month (GB)</label>
+                        <input type="number" id="lfs-bandwidth" value="10" min="0" max="10000" step="0.1">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>GitHub Codespaces</h3>
+                    <div class="input-group">
+                        <label for="codespaces-hours">Core Hours per Month</label>
+                        <input type="number" id="codespaces-hours" value="50" min="0" max="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="codespaces-storage">Storage (GB)</label>
+                        <input type="number" id="codespaces-storage" value="10" min="0" max="1000" step="0.1">
+                    </div>
+                </div>
+
+                <button id="calculate-btn" class="btn-primary">Calculate Costs</button>
+            </div>
+
+            <!-- Plan Comparison Panel -->
+            <div class="panel comparison-panel">
+                <h2>Plan Comparison</h2>
+
+                <div id="recommendation" class="recommendation hidden">
+                    <div class="recommendation-content">
+                        <h3>Recommended Plan</h3>
+                        <p id="recommendation-text"></p>
+                    </div>
+                </div>
+
+                <div class="plans-grid" id="plans-grid">
+                    <!-- Plans will be dynamically inserted here -->
+                </div>
+
+                <div class="pricing-notes">
+                    <h4>Pricing Notes</h4>
+                    <ul>
+                        <li><strong>GitHub Actions:</strong> Minute multipliers (Linux: 1x, Windows: 2x, macOS: 10x) are applied to usage. Overage rates: Linux $0.008/min, Windows $0.016/min, macOS $0.08/min</li>
+                        <li><strong>Packages:</strong> Storage overage at $0.25/GB/month, data transfer at $0.50/GB</li>
+                        <li><strong>Git LFS:</strong> Storage overage at $0.07/GB/month, bandwidth at $0.0875/GB</li>
+                        <li><strong>Codespaces:</strong> Compute starting at $0.18/hour, storage at $0.07/GB/month</li>
+                        <li><strong>Free Plan:</strong> GitHub Actions cannot exceed included minutes (hard cap)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calculator.js"></script>
+</body>
+</html>

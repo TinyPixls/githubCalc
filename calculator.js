@@ -1,0 +1,462 @@
+// GitHub Pricing Configuration
+const PRICING = {
+    plans: {
+        free: {
+            name: 'Free',
+            baseCost: 0,
+            perUser: 0,
+            actions: {
+                includedMinutes: 2000,
+                canExceed: false // Free plan has hard cap
+            },
+            packages: {
+                storage: 0.5, // GB
+                transfer: 1 // GB (free for public repos)
+            },
+            lfs: {
+                storage: 10, // GB
+                bandwidth: 10 // GB
+            },
+            codespaces: {
+                coreHours: 120,
+                storage: 15 // GB
+            }
+        },
+        pro: {
+            name: 'Pro',
+            baseCost: 4,
+            perUser: 4,
+            actions: {
+                includedMinutes: 3000,
+                canExceed: true
+            },
+            packages: {
+                storage: 2, // GB
+                transfer: 10 // GB
+            },
+            lfs: {
+                storage: 10, // GB
+                bandwidth: 10 // GB
+            },
+            codespaces: {
+                coreHours: 180,
+                storage: 20 // GB
+            }
+        },
+        team: {
+            name: 'Team',
+            baseCost: 0,
+            perUser: 4,
+            actions: {
+                includedMinutes: 3000,
+                canExceed: true
+            },
+            packages: {
+                storage: 2, // GB
+                transfer: 10 // GB
+            },
+            lfs: {
+                storage: 250, // GB
+                bandwidth: 250 // GB
+            },
+            codespaces: {
+                coreHours: 0,
+                storage: 0 // No free quota for organizations
+            }
+        },
+        enterprise: {
+            name: 'Enterprise',
+            baseCost: 0,
+            perUser: 21,
+            actions: {
+                includedMinutes: 50000,
+                canExceed: true
+            },
+            packages: {
+                storage: 50, // GB
+                transfer: 100 // GB
+            },
+            lfs: {
+                storage: 250, // GB
+                bandwidth: 250 // GB
+            },
+            codespaces: {
+                coreHours: 0,
+                storage: 0 // No free quota for organizations
+            }
+        }
+    },
+    actions: {
+        multipliers: {
+            linux: 1,
+            windows: 2,
+            macos: 10
+        },
+        overageRates: { // Per minute
+            linux: 0.008,
+            windows: 0.016,
+            macos: 0.08
+        }
+    },
+    packages: {
+        storageOverage: 0.25, // Per GB per month
+        transferOverage: 0.50 // Per GB
+    },
+    lfs: {
+        storageOverage: 0.07, // Per GB per month
+        bandwidthOverage: 0.0875 // Per GB
+    },
+    codespaces: {
+        computeRate: 0.18, // Per core hour (minimum)
+        storageRate: 0.07 // Per GB per month
+    }
+};
+
+class GitHubPricingCalculator {
+    constructor() {
+        this.usage = {};
+        this.results = {};
+        this.initEventListeners();
+    }
+
+    initEventListeners() {
+        const calculateBtn = document.getElementById('calculate-btn');
+        calculateBtn.addEventListener('click', () => this.calculate());
+
+        // Auto-calculate on input change
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('change', () => this.calculate());
+        });
+    }
+
+    getUsageInputs() {
+        return {
+            users: parseInt(document.getElementById('users').value) || 1,
+            jobsPerDay: parseInt(document.getElementById('jobs-per-day').value) || 0,
+            jobDuration: parseInt(document.getElementById('job-duration').value) || 0,
+            runnerType: document.getElementById('runner-type').value,
+            publicRepos: document.getElementById('public-repos').checked,
+            packageStorage: parseFloat(document.getElementById('package-storage').value) || 0,
+            packageTransfer: parseFloat(document.getElementById('package-transfer').value) || 0,
+            lfsStorage: parseFloat(document.getElementById('lfs-storage').value) || 0,
+            lfsBandwidth: parseFloat(document.getElementById('lfs-bandwidth').value) || 0,
+            codespacesHours: parseFloat(document.getElementById('codespaces-hours').value) || 0,
+            codespacesStorage: parseFloat(document.getElementById('codespaces-storage').value) || 0
+        };
+    }
+
+    calculateActionsUsage(usage) {
+        if (usage.publicRepos) {
+            return {
+                totalMinutes: 0,
+                billedMinutes: 0,
+                actualMinutes: 0
+            };
+        }
+
+        const daysPerMonth = 30;
+        const actualMinutes = usage.jobsPerDay * usage.jobDuration * daysPerMonth;
+        const multiplier = PRICING.actions.multipliers[usage.runnerType];
+        const billedMinutes = actualMinutes * multiplier;
+
+        return {
+            totalMinutes: actualMinutes,
+            billedMinutes: billedMinutes,
+            multiplier: multiplier
+        };
+    }
+
+    calculatePlanCost(planKey, usage) {
+        const plan = PRICING.plans[planKey];
+        const actionsUsage = this.calculateActionsUsage(usage);
+
+        let breakdown = {
+            baseCost: plan.perUser * usage.users,
+            actionsCost: 0,
+            packagesCost: 0,
+            lfsCost: 0,
+            codespacesCost: 0,
+            actionsDetails: {},
+            packagesDetails: {},
+            lfsDetails: {},
+            codespacesDetails: {},
+            canSupport: true,
+            reasons: []
+        };
+
+        // GitHub Actions calculation
+        if (!usage.publicRepos) {
+            const includedMinutes = plan.actions.includedMinutes;
+            const billedMinutes = actionsUsage.billedMinutes;
+            const overageMinutes = Math.max(0, billedMinutes - includedMinutes);
+
+            if (overageMinutes > 0 && !plan.actions.canExceed) {
+                breakdown.canSupport = false;
+                breakdown.reasons.push(`Exceeds Free plan Actions limit (need ${billedMinutes.toFixed(0)} minutes, only ${includedMinutes} allowed)`);
+            }
+
+            if (overageMinutes > 0 && plan.actions.canExceed) {
+                const overageRate = PRICING.actions.overageRates[usage.runnerType];
+                breakdown.actionsCost = overageMinutes * overageRate;
+            }
+
+            breakdown.actionsDetails = {
+                included: includedMinutes,
+                used: billedMinutes,
+                overage: overageMinutes,
+                actualMinutes: actionsUsage.totalMinutes,
+                multiplier: actionsUsage.multiplier
+            };
+        }
+
+        // GitHub Packages calculation
+        const storageOverage = Math.max(0, usage.packageStorage - plan.packages.storage);
+        const transferOverage = Math.max(0, usage.packageTransfer - plan.packages.transfer);
+
+        breakdown.packagesCost =
+            (storageOverage * PRICING.packages.storageOverage) +
+            (transferOverage * PRICING.packages.transferOverage);
+
+        breakdown.packagesDetails = {
+            storageIncluded: plan.packages.storage,
+            storageUsed: usage.packageStorage,
+            storageOverage: storageOverage,
+            transferIncluded: plan.packages.transfer,
+            transferUsed: usage.packageTransfer,
+            transferOverage: transferOverage
+        };
+
+        // Git LFS calculation
+        const lfsStorageOverage = Math.max(0, usage.lfsStorage - plan.lfs.storage);
+        const lfsBandwidthOverage = Math.max(0, usage.lfsBandwidth - plan.lfs.bandwidth);
+
+        breakdown.lfsCost =
+            (lfsStorageOverage * PRICING.lfs.storageOverage) +
+            (lfsBandwidthOverage * PRICING.lfs.bandwidthOverage);
+
+        breakdown.lfsDetails = {
+            storageIncluded: plan.lfs.storage,
+            storageUsed: usage.lfsStorage,
+            storageOverage: lfsStorageOverage,
+            bandwidthIncluded: plan.lfs.bandwidth,
+            bandwidthUsed: usage.lfsBandwidth,
+            bandwidthOverage: lfsBandwidthOverage
+        };
+
+        // Codespaces calculation
+        const codespacesHoursOverage = Math.max(0, usage.codespacesHours - plan.codespaces.coreHours);
+        const codespacesStorageOverage = Math.max(0, usage.codespacesStorage - plan.codespaces.storage);
+
+        breakdown.codespacesCost =
+            (codespacesHoursOverage * PRICING.codespaces.computeRate) +
+            (codespacesStorageOverage * PRICING.codespaces.storageRate);
+
+        breakdown.codespacesDetails = {
+            hoursIncluded: plan.codespaces.coreHours,
+            hoursUsed: usage.codespacesHours,
+            hoursOverage: codespacesHoursOverage,
+            storageIncluded: plan.codespaces.storage,
+            storageUsed: usage.codespacesStorage,
+            storageOverage: codespacesStorageOverage
+        };
+
+        // Total cost
+        breakdown.totalCost =
+            breakdown.baseCost +
+            breakdown.actionsCost +
+            breakdown.packagesCost +
+            breakdown.lfsCost +
+            breakdown.codespacesCost;
+
+        return breakdown;
+    }
+
+    calculate() {
+        this.usage = this.getUsageInputs();
+        this.results = {};
+
+        // Calculate costs for each plan
+        for (const planKey in PRICING.plans) {
+            this.results[planKey] = this.calculatePlanCost(planKey, this.usage);
+        }
+
+        // Find the best plan
+        const availablePlans = Object.entries(this.results)
+            .filter(([_, breakdown]) => breakdown.canSupport);
+
+        let bestPlan = null;
+        let lowestCost = Infinity;
+
+        availablePlans.forEach(([planKey, breakdown]) => {
+            if (breakdown.totalCost < lowestCost) {
+                lowestCost = breakdown.totalCost;
+                bestPlan = planKey;
+            }
+        });
+
+        this.renderResults(bestPlan);
+    }
+
+    renderResults(bestPlan) {
+        const plansGrid = document.getElementById('plans-grid');
+        plansGrid.innerHTML = '';
+
+        // Render recommendation
+        if (bestPlan) {
+            const recommendation = document.getElementById('recommendation');
+            const recommendationText = document.getElementById('recommendation-text');
+            const planName = PRICING.plans[bestPlan].name;
+            const totalCost = this.results[bestPlan].totalCost;
+
+            recommendationText.textContent = `Based on your usage, the ${planName} plan is most cost-effective at $${totalCost.toFixed(2)}/month.`;
+            recommendation.classList.remove('hidden');
+        }
+
+        // Render each plan card
+        for (const [planKey, breakdown] of Object.entries(this.results)) {
+            const plan = PRICING.plans[planKey];
+            const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey);
+            plansGrid.appendChild(card);
+        }
+    }
+
+    createPlanCard(planKey, plan, breakdown, isBest) {
+        const card = document.createElement('div');
+        card.className = 'plan-card';
+
+        if (isBest && breakdown.canSupport) {
+            card.classList.add('recommended');
+        }
+
+        if (!breakdown.canSupport) {
+            card.classList.add('not-available');
+        }
+
+        let badgeHtml = '';
+        if (isBest && breakdown.canSupport) {
+            badgeHtml = '<span class="plan-badge best-value">Best Value</span>';
+        } else if (!breakdown.canSupport) {
+            badgeHtml = '<span class="plan-badge not-available">Not Available</span>';
+        }
+
+        const baseCostDisplay = breakdown.baseCost === 0 ? 'Free' : `$${breakdown.baseCost.toFixed(2)}`;
+
+        let costBreakdownHtml = '';
+
+        // Base cost
+        if (breakdown.baseCost > 0) {
+            costBreakdownHtml += `
+                <div class="cost-item">
+                    <span class="cost-label">Base Cost (${this.usage.users} user${this.usage.users > 1 ? 's' : ''})</span>
+                    <span class="cost-value">$${breakdown.baseCost.toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        // Actions
+        if (!this.usage.publicRepos && breakdown.actionsDetails.used > 0) {
+            const details = breakdown.actionsDetails;
+            costBreakdownHtml += `
+                <div class="cost-item">
+                    <span class="cost-label">Actions (${details.actualMinutes.toFixed(0)} actual min × ${details.multiplier}x = ${details.used.toFixed(0)} billed min)</span>
+                    <span class="cost-value ${details.overage > 0 ? 'overage' : 'included'}">
+                        ${details.included.toLocaleString()} included${details.overage > 0 ? ', +$' + breakdown.actionsCost.toFixed(2) + ' overage' : ''}
+                    </span>
+                </div>
+            `;
+        }
+
+        // Packages
+        if (this.usage.packageStorage > 0 || this.usage.packageTransfer > 0) {
+            const details = breakdown.packagesDetails;
+            costBreakdownHtml += `
+                <div class="cost-item">
+                    <span class="cost-label">Packages Storage (${details.storageUsed} GB / ${details.storageIncluded} GB)</span>
+                    <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
+                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.packages.storageOverage).toFixed(2) : 'Included'}
+                    </span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Packages Transfer (${details.transferUsed} GB / ${details.transferIncluded} GB)</span>
+                    <span class="cost-value ${details.transferOverage > 0 ? 'overage' : 'included'}">
+                        ${details.transferOverage > 0 ? '+$' + (details.transferOverage * PRICING.packages.transferOverage).toFixed(2) : 'Included'}
+                    </span>
+                </div>
+            `;
+        }
+
+        // LFS
+        if (this.usage.lfsStorage > 0 || this.usage.lfsBandwidth > 0) {
+            const details = breakdown.lfsDetails;
+            costBreakdownHtml += `
+                <div class="cost-item">
+                    <span class="cost-label">LFS Storage (${details.storageUsed} GB / ${details.storageIncluded} GB)</span>
+                    <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
+                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included'}
+                    </span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GB / ${details.bandwidthIncluded} GB)</span>
+                    <span class="cost-value ${details.bandwidthOverage > 0 ? 'overage' : 'included'}">
+                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included'}
+                    </span>
+                </div>
+            `;
+        }
+
+        // Codespaces
+        if (this.usage.codespacesHours > 0 || this.usage.codespacesStorage > 0) {
+            const details = breakdown.codespacesDetails;
+            costBreakdownHtml += `
+                <div class="cost-item">
+                    <span class="cost-label">Codespaces Hours (${details.hoursUsed} hrs / ${details.hoursIncluded} hrs)</span>
+                    <span class="cost-value ${details.hoursOverage > 0 ? 'overage' : 'included'}">
+                        ${details.hoursOverage > 0 ? '+$' + (details.hoursOverage * PRICING.codespaces.computeRate).toFixed(2) : details.hoursIncluded > 0 ? 'Included' : '$' + (details.hoursUsed * PRICING.codespaces.computeRate).toFixed(2)}
+                    </span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Codespaces Storage (${details.storageUsed} GB / ${details.storageIncluded} GB)</span>
+                    <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
+                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.codespaces.storageRate).toFixed(2) : details.storageIncluded > 0 ? 'Included' : '$' + (details.storageUsed * PRICING.codespaces.storageRate).toFixed(2)}
+                    </span>
+                </div>
+            `;
+        }
+
+        let unavailableReason = '';
+        if (!breakdown.canSupport) {
+            unavailableReason = `
+                <div class="cost-item">
+                    <span class="cost-label cost-value exceeded">⚠️ ${breakdown.reasons.join('; ')}</span>
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="plan-header">
+                <h3 class="plan-name">${plan.name}</h3>
+                ${badgeHtml}
+            </div>
+            <div class="plan-base-cost">
+                ${baseCostDisplay}<span class="period">/month</span>
+            </div>
+            ${unavailableReason}
+            <div class="cost-breakdown">
+                ${costBreakdownHtml}
+            </div>
+            <div class="total-cost">
+                <span class="total-label">Total Monthly Cost</span>
+                <span class="total-value">$${breakdown.totalCost.toFixed(2)}</span>
+            </div>
+        `;
+
+        return card;
+    }
+}
+
+// Initialize calculator when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    const calculator = new GitHubPricingCalculator();
+    calculator.calculate(); // Initial calculation with default values
+});
