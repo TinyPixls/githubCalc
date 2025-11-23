@@ -97,6 +97,52 @@ h1 {
     box-shadow: var(--shadow-lg);
 }
 
+/* Team Size Section Styles */
+.team-size-section {
+    padding: 2rem 1.5rem;
+}
+
+.team-size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.team-size-header h3 {
+    margin: 0;
+}
+
+.team-size-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--color-accent);
+    outline: none;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--color-text);
+    padding: 0.5rem 0.75rem;
+    width: 200px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.team-size-input::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    font-weight: 400;
+    font-size: 1.25rem;
+}
+
+.team-size-input:focus {
+    border-bottom-color: var(--color-accent-hover);
+    background: rgba(9, 105, 218, 0.03);
+}
+
+.team-size-input:hover {
+    border-bottom-color: var(--color-accent-hover);
+}
+
 .section-content {
     margin-top: 1.5rem;
     overflow: hidden;
