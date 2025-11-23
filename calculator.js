@@ -294,16 +294,22 @@ class GitHubPricingCalculator {
             }
 
             if (overageMinutes > 0 && plan.actions.canExceed) {
-                // Calculate overage cost based on runner type proportions
+                // Calculate overage cost based on actual minutes per runner type
+                // Overage rates are per actual minute, not billed minute
                 let totalOverageCost = 0;
 
                 if (billedMinutes > 0) {
                     actionsUsage.runnerBreakdown.forEach(runner => {
-                        // Calculate this runner's share of the total overage
+                        // Calculate this runner's share of the total overage in billed minutes
                         const runnerProportion = runner.billedMinutes / billedMinutes;
-                        const runnerOverageMinutes = overageMinutes * runnerProportion;
+                        const runnerBilledOverage = overageMinutes * runnerProportion;
+
+                        // Convert billed overage back to actual minutes for this runner type
+                        const runnerActualOverage = runnerBilledOverage / runner.multiplier;
+
+                        // Apply the per-actual-minute rate
                         const overageRate = PRICING.actions.overageRates[runner.type];
-                        totalOverageCost += runnerOverageMinutes * overageRate;
+                        totalOverageCost += runnerActualOverage * overageRate;
                     });
                 }
 
