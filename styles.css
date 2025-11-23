@@ -718,6 +718,26 @@ select:focus {
     line-height: 1.5;
 }
 
+.pricing-link {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.pricing-link a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.pricing-link a:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+}
+
 .plans-grid {
     display: grid;
     gap: 1.5rem;
