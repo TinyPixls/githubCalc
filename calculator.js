@@ -107,7 +107,14 @@ const PRICING = {
         bandwidthOverage: 0.0875 // Per GB
     },
     codespaces: {
-        computeRate: 0.18, // Per core hour (minimum)
+        baseCoreRate: 0.18, // Base rate per hour for 2-core machine
+        coreMultipliers: {  // Hour multiplier based on cores
+            2: 1,    // 2 cores = 1x = $0.18/hr
+            4: 2,    // 4 cores = 2x = $0.36/hr
+            8: 4,    // 8 cores = 4x = $0.72/hr
+            16: 8,   // 16 cores = 8x = $1.44/hr
+            32: 16   // 32 cores = 16x = $2.88/hr
+        },
         storageRate: 0.07 // Per GB per month
     }
 };
@@ -118,8 +125,11 @@ class GitHubPricingCalculator {
         this.results = {};
         this.runners = [];
         this.runnerIdCounter = 0;
+        this.codespaces = [];
+        this.codespaceIdCounter = 0;
         this.initEventListeners();
         this.addRunner(); // Add initial runner
+        this.addCodespace(); // Add initial codespace machine
     }
 
     initEventListeners() {
@@ -128,6 +138,9 @@ class GitHubPricingCalculator {
 
         const addRunnerBtn = document.getElementById('add-runner-btn');
         addRunnerBtn.addEventListener('click', () => this.addRunner());
+
+        const addCodespaceBtn = document.getElementById('add-codespace-btn');
+        addCodespaceBtn.addEventListener('click', () => this.addCodespace());
 
         // Auto-calculate on input change
         document.addEventListener('change', (e) => {
@@ -199,6 +212,69 @@ class GitHubPricingCalculator {
         }
     }
 
+    addCodespace() {
+        const codespaceId = this.codespaceIdCounter++;
+        this.codespaces.push(codespaceId);
+
+        const container = document.getElementById('codespaces-container');
+        const codespaceCard = document.createElement('div');
+        codespaceCard.className = 'runner-card';
+        codespaceCard.id = `codespace-${codespaceId}`;
+
+        codespaceCard.innerHTML = `
+            <div class="runner-header">
+                <span class="runner-title">Machine #${codespaceId + 1}</span>
+                <button type="button" class="btn-remove" data-codespace-id="${codespaceId}">Remove</button>
+            </div>
+            <div class="runner-inputs">
+                <div class="input-group">
+                    <label for="codespace-${codespaceId}-cores">Machine Type</label>
+                    <select id="codespace-${codespaceId}-cores" data-codespace-id="${codespaceId}">
+                        <option value="2">2 cores, 8GB RAM ($0.18/hr)</option>
+                        <option value="4">4 cores, 16GB RAM ($0.36/hr)</option>
+                        <option value="8">8 cores, 32GB RAM ($0.72/hr)</option>
+                        <option value="16">16 cores, 64GB RAM ($1.44/hr)</option>
+                        <option value="32">32 cores, 128GB RAM ($2.88/hr)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="codespace-${codespaceId}-developers">Number of Developers</label>
+                    <input type="number" id="codespace-${codespaceId}-developers" data-codespace-id="${codespaceId}" value="1" min="0" max="1000">
+                </div>
+                <div class="input-group">
+                    <label for="codespace-${codespaceId}-hours">Hours per Week per Developer</label>
+                    <input type="number" id="codespace-${codespaceId}-hours" data-codespace-id="${codespaceId}" value="20" min="0" max="168">
+                </div>
+            </div>
+        `;
+
+        container.appendChild(codespaceCard);
+
+        const removeBtn = codespaceCard.querySelector('.btn-remove');
+        removeBtn.addEventListener('click', () => this.removeCodespace(codespaceId));
+
+        this.calculate();
+    }
+
+    removeCodespace(codespaceId) {
+        const index = this.codespaces.indexOf(codespaceId);
+        if (index > -1) {
+            this.codespaces.splice(index, 1);
+        }
+
+        const codespaceCard = document.getElementById(`codespace-${codespaceId}`);
+        if (codespaceCard) {
+            codespaceCard.remove();
+        }
+
+        // Ensure at least one codespace exists
+        if (this.codespaces.length === 0) {
+            this.addCodespace();
+        } else {
+            this.calculate();
+        }
+    }
+
     getUsageInputs() {
         const runnerConfigs = this.runners.map(runnerId => {
             const typeSelect = document.getElementById(`runner-${runnerId}-type`);
@@ -212,6 +288,18 @@ class GitHubPricingCalculator {
             };
         });
 
+        const codespaceConfigs = this.codespaces.map(codespaceId => {
+            const coresSelect = document.getElementById(`codespace-${codespaceId}-cores`);
+            const developersInput = document.getElementById(`codespace-${codespaceId}-developers`);
+            const hoursInput = document.getElementById(`codespace-${codespaceId}-hours`);
+
+            return {
+                cores: coresSelect ? parseInt(coresSelect.value) : 2,
+                developers: developersInput ? (parseInt(developersInput.value) || 0) : 0,
+                hoursPerWeek: hoursInput ? (parseFloat(hoursInput.value) || 0) : 0
+            };
+        });
+
         return {
             users: parseInt(document.getElementById('users').value) || 1,
             runners: runnerConfigs,
@@ -220,8 +308,9 @@ class GitHubPricingCalculator {
             packageTransfer: parseFloat(document.getElementById('package-transfer').value) || 0,
             lfsStorage: parseFloat(document.getElementById('lfs-storage').value) || 0,
             lfsBandwidth: parseFloat(document.getElementById('lfs-bandwidth').value) || 0,
-            codespacesHours: parseFloat(document.getElementById('codespaces-hours').value) || 0,
-            codespacesStorage: parseFloat(document.getElementById('codespaces-storage').value) || 0
+            codespaces: codespaceConfigs,
+            storedCodespaces: parseFloat(document.getElementById('stored-codespaces').value) || 0,
+            avgProjectSize: parseFloat(document.getElementById('avg-project-size').value) || 0
         };
     }
 
@@ -360,20 +449,51 @@ class GitHubPricingCalculator {
         };
 
         // Codespaces calculation
-        const codespacesHoursOverage = Math.max(0, usage.codespacesHours - plan.codespaces.coreHours);
-        const codespacesStorageOverage = Math.max(0, usage.codespacesStorage - plan.codespaces.storage);
+        const weeksPerMonth = 4.33;
+        let totalComputeHours = 0;
+        const machineBreakdown = [];
 
-        breakdown.codespacesCost =
-            (codespacesHoursOverage * PRICING.codespaces.computeRate) +
-            (codespacesStorageOverage * PRICING.codespaces.storageRate);
+        usage.codespaces.forEach(machine => {
+            const monthlyHours = machine.developers * machine.hoursPerWeek * weeksPerMonth;
+            const coreMultiplier = PRICING.codespaces.coreMultipliers[machine.cores];
+            const coreHours = monthlyHours * coreMultiplier;
+
+            totalComputeHours += coreHours;
+
+            if (monthlyHours > 0) {
+                machineBreakdown.push({
+                    cores: machine.cores,
+                    developers: machine.developers,
+                    hoursPerWeek: machine.hoursPerWeek,
+                    monthlyHours: monthlyHours,
+                    coreHours: coreHours,
+                    coreMultiplier: coreMultiplier
+                });
+            }
+        });
+
+        const includedCoreHours = plan.codespaces.coreHours;
+        const computeOverage = Math.max(0, totalComputeHours - includedCoreHours);
+        const computeCost = computeOverage * PRICING.codespaces.baseCoreRate;
+
+        // Storage calculation
+        const totalStorage = usage.storedCodespaces * usage.avgProjectSize * usage.users;
+        const includedStorage = plan.codespaces.storage;
+        const storageOverage = Math.max(0, totalStorage - includedStorage);
+        const storageCost = storageOverage * PRICING.codespaces.storageRate;
+
+        breakdown.codespacesCost = computeCost + storageCost;
 
         breakdown.codespacesDetails = {
-            hoursIncluded: plan.codespaces.coreHours,
-            hoursUsed: usage.codespacesHours,
-            hoursOverage: codespacesHoursOverage,
-            storageIncluded: plan.codespaces.storage,
-            storageUsed: usage.codespacesStorage,
-            storageOverage: codespacesStorageOverage
+            hoursIncluded: includedCoreHours,
+            hoursUsed: totalComputeHours,
+            hoursOverage: computeOverage,
+            storageIncluded: includedStorage,
+            storageUsed: totalStorage,
+            storageOverage: storageOverage,
+            machineBreakdown: machineBreakdown,
+            computeCost: computeCost,
+            storageCost: storageCost
         };
 
         // Total cost
@@ -394,6 +514,7 @@ class GitHubPricingCalculator {
         // Calculate and display total Actions usage
         const actionsUsage = this.calculateActionsUsage(this.usage);
         this.updateActionsUsageSummary(actionsUsage);
+        this.updateCodespacesUsageSummary();
 
         // Calculate costs for each plan
         for (const planKey in PRICING.plans) {
@@ -428,6 +549,20 @@ class GitHubPricingCalculator {
             summaryDiv.classList.remove('hidden');
             actualMinutesSpan.textContent = actionsUsage.totalMinutes.toLocaleString();
             billedMinutesSpan.textContent = actionsUsage.billedMinutes.toLocaleString();
+        }
+    }
+
+    updateCodespacesUsageSummary() {
+        const summaryDiv = document.getElementById('total-codespaces-usage');
+        const totalStorageSpan = document.getElementById('total-storage-gb');
+
+        const totalStorage = this.usage.storedCodespaces * this.usage.avgProjectSize * this.usage.users;
+
+        if (totalStorage === 0) {
+            summaryDiv.classList.add('hidden');
+        } else {
+            summaryDiv.classList.remove('hidden');
+            totalStorageSpan.textContent = totalStorage.toFixed(1);
         }
     }
 
@@ -549,22 +684,33 @@ class GitHubPricingCalculator {
         }
 
         // Codespaces
-        if (this.usage.codespacesHours > 0 || this.usage.codespacesStorage > 0) {
+        const hasCodespaceUsage = breakdown.codespacesDetails.hoursUsed > 0 || breakdown.codespacesDetails.storageUsed > 0;
+        if (hasCodespaceUsage) {
             const details = breakdown.codespacesDetails;
-            costBreakdownHtml += `
-                <div class="cost-item">
-                    <span class="cost-label">Codespaces Hours (${details.hoursUsed} hrs / ${details.hoursIncluded} hrs)</span>
-                    <span class="cost-value ${details.hoursOverage > 0 ? 'overage' : 'included'}">
-                        ${details.hoursOverage > 0 ? '+$' + (details.hoursOverage * PRICING.codespaces.computeRate).toFixed(2) : details.hoursIncluded > 0 ? 'Included' : '$' + (details.hoursUsed * PRICING.codespaces.computeRate).toFixed(2)}
-                    </span>
-                </div>
-                <div class="cost-item">
-                    <span class="cost-label">Codespaces Storage (${details.storageUsed} GB / ${details.storageIncluded} GB)</span>
-                    <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
-                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.codespaces.storageRate).toFixed(2) : details.storageIncluded > 0 ? 'Included' : '$' + (details.storageUsed * PRICING.codespaces.storageRate).toFixed(2)}
-                    </span>
-                </div>
-            `;
+
+            // Compute breakdown
+            if (details.hoursUsed > 0) {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">Codespaces Compute (${details.hoursUsed.toFixed(0)} core-hrs / ${details.hoursIncluded} included)</span>
+                        <span class="cost-value ${details.hoursOverage > 0 ? 'overage' : 'included'}">
+                            ${details.hoursOverage > 0 ? '+$' + details.computeCost.toFixed(2) : details.hoursIncluded > 0 ? 'Included' : '$' + details.computeCost.toFixed(2)}
+                        </span>
+                    </div>
+                `;
+            }
+
+            // Storage breakdown
+            if (details.storageUsed > 0) {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">Codespaces Storage (${details.storageUsed.toFixed(1)} GB / ${details.storageIncluded} GB)</span>
+                        <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
+                            ${details.storageOverage > 0 ? '+$' + details.storageCost.toFixed(2) : details.storageIncluded > 0 ? 'Included' : '$' + details.storageCost.toFixed(2)}
+                        </span>
+                    </div>
+                `;
+            }
         }
 
         let unavailableReason = '';

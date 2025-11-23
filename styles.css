@@ -5,24 +5,28 @@
 }
 
 :root {
-    --color-bg: #0d1117;
-    --color-bg-secondary: #161b22;
-    --color-border: #30363d;
-    --color-text: #c9d1d9;
-    --color-text-secondary: #8b949e;
-    --color-accent: #58a6ff;
-    --color-accent-hover: #1f6feb;
-    --color-success: #238636;
-    --color-warning: #d29922;
-    --color-danger: #da3633;
-    --color-panel: #0d1117;
+    --color-bg: #f6f8fa;
+    --color-bg-secondary: #ffffff;
+    --color-border: #d0d7de;
+    --color-text: #24292f;
+    --color-text-secondary: #57606a;
+    --color-accent: #0969da;
+    --color-accent-hover: #0550ae;
+    --color-success: #1a7f37;
+    --color-warning: #bf8700;
+    --color-danger: #cf222e;
+    --color-panel: #f6f8fa;
+    --color-panel-hover: #ffffff;
     --border-radius: 6px;
     --spacing-unit: 16px;
+    --shadow-sm: 0 1px 3px rgba(27, 31, 36, 0.12), 0 1px 2px rgba(27, 31, 36, 0.08);
+    --shadow-md: 0 4px 6px rgba(27, 31, 36, 0.08), 0 2px 4px rgba(27, 31, 36, 0.06);
+    --shadow-lg: 0 12px 24px rgba(27, 31, 36, 0.1), 0 6px 12px rgba(27, 31, 36, 0.08);
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    background: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
     min-height: 100vh;
@@ -41,6 +45,7 @@ header {
     background: var(--color-bg-secondary);
     border-radius: var(--border-radius);
     border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
 }
 
 h1 {
@@ -67,7 +72,7 @@ h1 {
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
 .panel h2 {
@@ -194,16 +199,18 @@ select:focus {
 }
 
 .runner-card {
-    background: var(--color-panel);
+    background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: 1rem;
     margin-bottom: 1rem;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
 }
 
 .runner-card:hover {
     border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
 }
 
 .runner-header {
@@ -227,11 +234,12 @@ select:focus {
 .usage-summary {
     margin-top: 1rem;
     padding: 1rem;
-    background: rgba(88, 166, 255, 0.1);
+    background: rgba(9, 105, 218, 0.08);
     border: 1px solid var(--color-accent);
     border-radius: var(--border-radius);
     color: var(--color-text);
     font-size: 0.9rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .usage-summary.hidden {
@@ -239,11 +247,12 @@ select:focus {
 }
 
 .recommendation {
-    background: linear-gradient(135deg, #1f6feb 0%, #58a6ff 100%);
+    background: linear-gradient(135deg, rgba(9, 105, 218, 0.1) 0%, rgba(9, 105, 218, 0.05) 100%);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3);
+    border: 2px solid var(--color-accent);
+    box-shadow: var(--shadow-md);
 }
 
 .recommendation.hidden {
@@ -251,13 +260,13 @@ select:focus {
 }
 
 .recommendation-content h3 {
-    color: white;
+    color: var(--color-accent);
     margin-bottom: 0.5rem;
     font-size: 1.2rem;
 }
 
 .recommendation-content p {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--color-text);
     font-size: 1rem;
     line-height: 1.5;
 }
@@ -268,16 +277,18 @@ select:focus {
 }
 
 .plan-card {
-    background: var(--color-panel);
+    background: var(--color-bg-secondary);
     border: 2px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: 1.5rem;
-    transition: border-color 0.2s, transform 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
 }
 
 .plan-card.recommended {
     border-color: var(--color-accent);
-    background: linear-gradient(135deg, rgba(31, 111, 235, 0.1) 0%, rgba(88, 166, 255, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(9, 105, 218, 0.08) 0%, rgba(9, 105, 218, 0.04) 100%);
+    box-shadow: var(--shadow-md);
 }
 
 .plan-card.not-available {
@@ -392,9 +403,10 @@ select:focus {
 .pricing-notes {
     margin-top: 2rem;
     padding: 1.5rem;
-    background: var(--color-panel);
+    background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
 }
 
 .pricing-notes h4 {
