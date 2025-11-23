@@ -37,11 +37,12 @@
                         </div>
                     </div>
                     <div class="section-content">
-                        <div class="input-group">
-                            <label for="public-repos">
-                                <input type="checkbox" id="public-repos">
-                                Primarily public repositories (Actions are free)
-                            </label>
+                        <div class="toggle-option">
+                            <span class="toggle-label">Primarily Public Repositories</span>
+                            <div class="toggle-wrapper">
+                                <label class="toggle-label-text" for="public-repos">Free for public</label>
+                                <input type="checkbox" id="public-repos" class="section-checkbox">
+                            </div>
                         </div>
                         <div id="runners-container">
                             <!-- Runner configurations will be added here -->

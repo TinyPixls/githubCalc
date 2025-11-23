@@ -357,14 +357,6 @@ class GitHubPricingCalculator {
     }
 
     calculateActionsUsage(usage) {
-        if (usage.publicRepos) {
-            return {
-                totalMinutes: 0,
-                billedMinutes: 0,
-                runnerBreakdown: []
-            };
-        }
-
         const daysPerMonth = 30;
         let totalActualMinutes = 0;
         let totalBilledMinutes = 0;
@@ -420,11 +412,23 @@ class GitHubPricingCalculator {
         }
 
         // GitHub Actions calculation
-        if (!usage.publicRepos) {
-            const includedMinutes = plan.actions.includedMinutes;
-            const billedMinutes = actionsUsage.billedMinutes;
-            const overageMinutes = Math.max(0, billedMinutes - includedMinutes);
+        const includedMinutes = plan.actions.includedMinutes;
+        const billedMinutes = actionsUsage.billedMinutes;
+        const overageMinutes = Math.max(0, billedMinutes - includedMinutes);
 
+        // For public repos, Actions are free
+        if (usage.publicRepos) {
+            breakdown.actionsCost = 0;
+            breakdown.actionsDetails = {
+                included: includedMinutes,
+                used: billedMinutes,
+                overage: 0,
+                actualMinutes: actionsUsage.totalMinutes,
+                runnerBreakdown: actionsUsage.runnerBreakdown,
+                isFreePublic: true
+            };
+        } else {
+            // Private repos - apply normal pricing
             if (overageMinutes > 0 && !plan.actions.canExceed) {
                 breakdown.canSupport = false;
                 breakdown.reasons.push(`Exceeds Free plan Actions limit (need ${billedMinutes.toFixed(0)} minutes, only ${includedMinutes} allowed)`);
@@ -458,7 +462,8 @@ class GitHubPricingCalculator {
                 used: billedMinutes,
                 overage: overageMinutes,
                 actualMinutes: actionsUsage.totalMinutes,
-                runnerBreakdown: actionsUsage.runnerBreakdown
+                runnerBreakdown: actionsUsage.runnerBreakdown,
+                isFreePublic: false
             };
         }
 
@@ -591,7 +596,7 @@ class GitHubPricingCalculator {
         const actualMinutesSpan = document.getElementById('total-actual-minutes');
         const billedMinutesSpan = document.getElementById('total-billed-minutes');
 
-        if (actionsUsage.totalMinutes === 0 || this.usage.publicRepos) {
+        if (actionsUsage.totalMinutes === 0) {
             summaryDiv.classList.add('hidden');
         } else {
             summaryDiv.classList.remove('hidden');
@@ -676,7 +681,7 @@ class GitHubPricingCalculator {
         }
 
         // Actions
-        if (!this.usage.publicRepos && breakdown.actionsDetails.used > 0) {
+        if (breakdown.actionsDetails.used > 0) {
             const details = breakdown.actionsDetails;
 
             // Show breakdown by runner type if multiple types exist
@@ -688,14 +693,23 @@ class GitHubPricingCalculator {
                 runnerInfo = runnerSummaries + ' = ';
             }
 
-            costBreakdownHtml += `
-                <div class="cost-item">
-                    <span class="cost-label">Actions (${runnerInfo}${details.used.toFixed(0)} billed min)</span>
-                    <span class="cost-value ${details.overage > 0 ? 'overage' : 'included'}">
-                        ${details.included.toLocaleString()} included${details.overage > 0 ? ', +$' + breakdown.actionsCost.toFixed(2) + ' overage' : ''}
-                    </span>
-                </div>
-            `;
+            if (details.isFreePublic) {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">Actions (${runnerInfo}${details.used.toFixed(0)} billed min)</span>
+                        <span class="cost-value included">Free for public repos</span>
+                    </div>
+                `;
+            } else {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">Actions (${runnerInfo}${details.used.toFixed(0)} billed min)</span>
+                        <span class="cost-value ${details.overage > 0 ? 'overage' : 'included'}">
+                            ${details.included.toLocaleString()} included${details.overage > 0 ? ', +$' + breakdown.actionsCost.toFixed(2) + ' overage' : ''}
+                        </span>
+                    </div>
+                `;
+            }
         }
 
         // Packages
