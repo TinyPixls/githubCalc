@@ -27,28 +27,23 @@
                 </div>
 
                 <div class="section">
-                    <h3>GitHub Actions</h3>
-                    <div class="input-group">
-                        <label for="jobs-per-day">Jobs per Day</label>
-                        <input type="number" id="jobs-per-day" value="10" min="0" max="1000">
-                    </div>
-                    <div class="input-group">
-                        <label for="job-duration">Average Job Duration (minutes)</label>
-                        <input type="number" id="job-duration" value="5" min="0" max="360">
-                    </div>
-                    <div class="input-group">
-                        <label for="runner-type">Runner Type</label>
-                        <select id="runner-type">
-                            <option value="linux">Ubuntu Linux (1x multiplier)</option>
-                            <option value="windows">Windows (2x multiplier)</option>
-                            <option value="macos">macOS (10x multiplier)</option>
-                        </select>
+                    <div class="section-header">
+                        <h3>GitHub Actions</h3>
+                        <button type="button" id="add-runner-btn" class="btn-secondary">+ Add Runner</button>
                     </div>
                     <div class="input-group">
                         <label for="public-repos">
                             <input type="checkbox" id="public-repos">
                             Primarily public repositories (Actions are free)
                         </label>
+                    </div>
+                    <div id="runners-container">
+                        <!-- Runner configurations will be added here -->
+                    </div>
+                    <div id="total-actions-usage" class="usage-summary hidden">
+                        <strong>Total Monthly Usage:</strong>
+                        <span id="total-actual-minutes"></span> actual minutes =
+                        <span id="total-billed-minutes"></span> billed minutes
                     </div>
                 </div>
 

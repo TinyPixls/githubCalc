@@ -116,26 +116,105 @@ class GitHubPricingCalculator {
     constructor() {
         this.usage = {};
         this.results = {};
+        this.runners = [];
+        this.runnerIdCounter = 0;
         this.initEventListeners();
+        this.addRunner(); // Add initial runner
     }
 
     initEventListeners() {
         const calculateBtn = document.getElementById('calculate-btn');
         calculateBtn.addEventListener('click', () => this.calculate());
 
+        const addRunnerBtn = document.getElementById('add-runner-btn');
+        addRunnerBtn.addEventListener('click', () => this.addRunner());
+
         // Auto-calculate on input change
-        const inputs = document.querySelectorAll('input, select');
-        inputs.forEach(input => {
-            input.addEventListener('change', () => this.calculate());
+        document.addEventListener('change', (e) => {
+            if (e.target.matches('input, select')) {
+                this.calculate();
+            }
         });
     }
 
+    addRunner() {
+        const runnerId = this.runnerIdCounter++;
+        this.runners.push(runnerId);
+
+        const container = document.getElementById('runners-container');
+        const runnerCard = document.createElement('div');
+        runnerCard.className = 'runner-card';
+        runnerCard.id = `runner-${runnerId}`;
+
+        runnerCard.innerHTML = `
+            <div class="runner-header">
+                <span class="runner-title">Runner #${runnerId + 1}</span>
+                <button type="button" class="btn-remove" data-runner-id="${runnerId}">Remove</button>
+            </div>
+            <div class="runner-inputs">
+                <div class="input-group">
+                    <label for="runner-${runnerId}-type">Runner Type</label>
+                    <select id="runner-${runnerId}-type" data-runner-id="${runnerId}">
+                        <option value="linux">Ubuntu Linux (1x multiplier)</option>
+                        <option value="windows">Windows (2x multiplier)</option>
+                        <option value="macos">macOS (10x multiplier)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="runner-${runnerId}-jobs">Jobs per Day</label>
+                    <input type="number" id="runner-${runnerId}-jobs" data-runner-id="${runnerId}" value="10" min="0" max="1000">
+                </div>
+                <div class="input-group">
+                    <label for="runner-${runnerId}-duration">Average Job Duration (minutes)</label>
+                    <input type="number" id="runner-${runnerId}-duration" data-runner-id="${runnerId}" value="5" min="0" max="360">
+                </div>
+            </div>
+        `;
+
+        container.appendChild(runnerCard);
+
+        // Add remove listener
+        const removeBtn = runnerCard.querySelector('.btn-remove');
+        removeBtn.addEventListener('click', () => this.removeRunner(runnerId));
+
+        this.calculate();
+    }
+
+    removeRunner(runnerId) {
+        const index = this.runners.indexOf(runnerId);
+        if (index > -1) {
+            this.runners.splice(index, 1);
+        }
+
+        const runnerCard = document.getElementById(`runner-${runnerId}`);
+        if (runnerCard) {
+            runnerCard.remove();
+        }
+
+        // Ensure at least one runner exists
+        if (this.runners.length === 0) {
+            this.addRunner();
+        } else {
+            this.calculate();
+        }
+    }
+
     getUsageInputs() {
+        const runnerConfigs = this.runners.map(runnerId => {
+            const typeSelect = document.getElementById(`runner-${runnerId}-type`);
+            const jobsInput = document.getElementById(`runner-${runnerId}-jobs`);
+            const durationInput = document.getElementById(`runner-${runnerId}-duration`);
+
+            return {
+                type: typeSelect ? typeSelect.value : 'linux',
+                jobsPerDay: jobsInput ? (parseInt(jobsInput.value) || 0) : 0,
+                duration: durationInput ? (parseInt(durationInput.value) || 0) : 0
+            };
+        });
+
         return {
             users: parseInt(document.getElementById('users').value) || 1,
-            jobsPerDay: parseInt(document.getElementById('jobs-per-day').value) || 0,
-            jobDuration: parseInt(document.getElementById('job-duration').value) || 0,
-            runnerType: document.getElementById('runner-type').value,
+            runners: runnerConfigs,
             publicRepos: document.getElementById('public-repos').checked,
             packageStorage: parseFloat(document.getElementById('package-storage').value) || 0,
             packageTransfer: parseFloat(document.getElementById('package-transfer').value) || 0,
@@ -151,19 +230,37 @@ class GitHubPricingCalculator {
             return {
                 totalMinutes: 0,
                 billedMinutes: 0,
-                actualMinutes: 0
+                runnerBreakdown: []
             };
         }
 
         const daysPerMonth = 30;
-        const actualMinutes = usage.jobsPerDay * usage.jobDuration * daysPerMonth;
-        const multiplier = PRICING.actions.multipliers[usage.runnerType];
-        const billedMinutes = actualMinutes * multiplier;
+        let totalActualMinutes = 0;
+        let totalBilledMinutes = 0;
+        const runnerBreakdown = [];
+
+        usage.runners.forEach(runner => {
+            const actualMinutes = runner.jobsPerDay * runner.duration * daysPerMonth;
+            const multiplier = PRICING.actions.multipliers[runner.type];
+            const billedMinutes = actualMinutes * multiplier;
+
+            totalActualMinutes += actualMinutes;
+            totalBilledMinutes += billedMinutes;
+
+            if (actualMinutes > 0) {
+                runnerBreakdown.push({
+                    type: runner.type,
+                    actualMinutes: actualMinutes,
+                    multiplier: multiplier,
+                    billedMinutes: billedMinutes
+                });
+            }
+        });
 
         return {
-            totalMinutes: actualMinutes,
-            billedMinutes: billedMinutes,
-            multiplier: multiplier
+            totalMinutes: totalActualMinutes,
+            billedMinutes: totalBilledMinutes,
+            runnerBreakdown: runnerBreakdown
         };
     }
 
@@ -197,8 +294,20 @@ class GitHubPricingCalculator {
             }
 
             if (overageMinutes > 0 && plan.actions.canExceed) {
-                const overageRate = PRICING.actions.overageRates[usage.runnerType];
-                breakdown.actionsCost = overageMinutes * overageRate;
+                // Calculate overage cost based on runner type proportions
+                let totalOverageCost = 0;
+
+                if (billedMinutes > 0) {
+                    actionsUsage.runnerBreakdown.forEach(runner => {
+                        // Calculate this runner's share of the total overage
+                        const runnerProportion = runner.billedMinutes / billedMinutes;
+                        const runnerOverageMinutes = overageMinutes * runnerProportion;
+                        const overageRate = PRICING.actions.overageRates[runner.type];
+                        totalOverageCost += runnerOverageMinutes * overageRate;
+                    });
+                }
+
+                breakdown.actionsCost = totalOverageCost;
             }
 
             breakdown.actionsDetails = {
@@ -206,7 +315,7 @@ class GitHubPricingCalculator {
                 used: billedMinutes,
                 overage: overageMinutes,
                 actualMinutes: actionsUsage.totalMinutes,
-                multiplier: actionsUsage.multiplier
+                runnerBreakdown: actionsUsage.runnerBreakdown
             };
         }
 
@@ -276,6 +385,10 @@ class GitHubPricingCalculator {
         this.usage = this.getUsageInputs();
         this.results = {};
 
+        // Calculate and display total Actions usage
+        const actionsUsage = this.calculateActionsUsage(this.usage);
+        this.updateActionsUsageSummary(actionsUsage);
+
         // Calculate costs for each plan
         for (const planKey in PRICING.plans) {
             this.results[planKey] = this.calculatePlanCost(planKey, this.usage);
@@ -296,6 +409,20 @@ class GitHubPricingCalculator {
         });
 
         this.renderResults(bestPlan);
+    }
+
+    updateActionsUsageSummary(actionsUsage) {
+        const summaryDiv = document.getElementById('total-actions-usage');
+        const actualMinutesSpan = document.getElementById('total-actual-minutes');
+        const billedMinutesSpan = document.getElementById('total-billed-minutes');
+
+        if (actionsUsage.totalMinutes === 0 || this.usage.publicRepos) {
+            summaryDiv.classList.add('hidden');
+        } else {
+            summaryDiv.classList.remove('hidden');
+            actualMinutesSpan.textContent = actionsUsage.totalMinutes.toLocaleString();
+            billedMinutesSpan.textContent = actionsUsage.billedMinutes.toLocaleString();
+        }
     }
 
     renderResults(bestPlan) {
@@ -357,9 +484,19 @@ class GitHubPricingCalculator {
         // Actions
         if (!this.usage.publicRepos && breakdown.actionsDetails.used > 0) {
             const details = breakdown.actionsDetails;
+
+            // Show breakdown by runner type if multiple types exist
+            let runnerInfo = '';
+            if (details.runnerBreakdown && details.runnerBreakdown.length > 0) {
+                const runnerSummaries = details.runnerBreakdown.map(r =>
+                    `${r.actualMinutes.toFixed(0)} ${r.type} (${r.multiplier}x)`
+                ).join(' + ');
+                runnerInfo = runnerSummaries + ' = ';
+            }
+
             costBreakdownHtml += `
                 <div class="cost-item">
-                    <span class="cost-label">Actions (${details.actualMinutes.toFixed(0)} actual min × ${details.multiplier}x = ${details.used.toFixed(0)} billed min)</span>
+                    <span class="cost-label">Actions (${runnerInfo}${details.used.toFixed(0)} billed min)</span>
                     <span class="cost-value ${details.overage > 0 ? 'overage' : 'included'}">
                         ${details.included.toLocaleString()} included${details.overage > 0 ? ', +$' + breakdown.actionsCost.toFixed(2) + ' overage' : ''}
                     </span>

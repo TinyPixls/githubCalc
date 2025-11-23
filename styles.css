@@ -147,6 +147,97 @@ select:focus {
     transform: scale(0.98);
 }
 
+.btn-secondary {
+    padding: 0.5rem 1rem;
+    background: var(--color-panel);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-secondary:hover {
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.btn-secondary:active {
+    transform: scale(0.98);
+}
+
+.btn-remove {
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+    border-radius: var(--border-radius);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-remove:hover {
+    background: rgba(218, 54, 51, 0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-header h3 {
+    margin-bottom: 0;
+}
+
+.runner-card {
+    background: var(--color-panel);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+}
+
+.runner-card:hover {
+    border-color: var(--color-accent);
+}
+
+.runner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.runner-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.runner-inputs {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.usage-summary {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.usage-summary.hidden {
+    display: none;
+}
+
 .recommendation {
     background: linear-gradient(135deg, #1f6feb 0%, #58a6ff 100%);
     padding: 1.5rem;
