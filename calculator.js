@@ -662,7 +662,12 @@ class GitHubPricingCalculator {
             badgeHtml = '<span class="plan-badge not-available">Not Available</span>';
         }
 
-        const baseCostDisplay = breakdown.baseCost === 0 ? 'Free' : `$${breakdown.baseCost.toFixed(2)}`;
+        // Check if this is Pro plan unavailable due to user count
+        const isProUserLimit = planKey === 'pro' && !breakdown.canSupport &&
+                               breakdown.reasons.some(r => r.includes('only supports 1 user'));
+
+        const baseCostDisplay = isProUserLimit ? 'N/A' :
+                               (breakdown.baseCost === 0 ? 'Free' : `$${breakdown.baseCost.toFixed(2)}`);
 
         let costBreakdownHtml = '';
 
@@ -671,7 +676,7 @@ class GitHubPricingCalculator {
             costBreakdownHtml += `
                 <div class="cost-item">
                     <span class="cost-label">Base Cost (${this.usage.users} user${this.usage.users > 1 ? 's' : ''})</span>
-                    <span class="cost-value">$${breakdown.baseCost.toFixed(2)}</span>
+                    <span class="cost-value">${isProUserLimit ? 'N/A' : '$' + breakdown.baseCost.toFixed(2)}</span>
                 </div>
             `;
         }
@@ -790,7 +795,7 @@ class GitHubPricingCalculator {
             </div>
             <div class="total-cost">
                 <span class="total-label">Total Monthly Cost</span>
-                <span class="total-value">$${breakdown.totalCost.toFixed(2)}</span>
+                <span class="total-value">${isProUserLimit ? 'N/A' : '$' + breakdown.totalCost.toFixed(2)}</span>
             </div>
         `;
 
