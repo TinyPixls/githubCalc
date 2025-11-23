@@ -316,8 +316,7 @@ class GitHubPricingCalculator {
     }
 
     getUsageInputs() {
-        // Check which sections are enabled
-        const teamSizeEnabled = document.getElementById('toggle-team-size').checked;
+        // Check which sections are enabled (team size is always enabled)
         const actionsEnabled = document.getElementById('toggle-actions').checked;
         const packagesEnabled = document.getElementById('toggle-packages').checked;
         const lfsEnabled = document.getElementById('toggle-lfs').checked;
@@ -350,7 +349,7 @@ class GitHubPricingCalculator {
         }) : [];
 
         return {
-            users: teamSizeEnabled ? (parseInt(document.getElementById('users').value) || 1) : 1,
+            users: parseInt(document.getElementById('users').value) || 1,
             runners: runnerConfigs,
             publicRepos: actionsEnabled ? document.getElementById('public-repos').checked : false,
             packageStorage: packagesEnabled ? (parseFloat(document.getElementById('package-storage').value) || 0) : 0,
@@ -419,6 +418,12 @@ class GitHubPricingCalculator {
             canSupport: true,
             reasons: []
         };
+
+        // Pro plan only supports 1 user
+        if (planKey === 'pro' && usage.users > 1) {
+            breakdown.canSupport = false;
+            breakdown.reasons.push(`Pro plan only supports 1 user (you have ${usage.users} users)`);
+        }
 
         // GitHub Actions calculation
         if (!usage.publicRepos) {
