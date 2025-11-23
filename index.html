@@ -18,78 +18,88 @@
             <div class="panel usage-panel">
                 <h2>Your Expected Usage</h2>
 
-                <div class="section">
-                    <h3>Team Size</h3>
-                    <div class="input-group">
-                        <label for="users">Number of Users</label>
-                        <input type="number" id="users" value="5" min="1" max="10000">
+                <div class="section" data-section="team-size">
+                    <h3><span class="section-toggle">▼</span> Team Size</h3>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="users">Number of Users</label>
+                            <input type="number" id="users" value="5" min="1" max="10000">
+                        </div>
                     </div>
                 </div>
 
-                <div class="section">
+                <div class="section" data-section="actions">
                     <div class="section-header">
-                        <h3>GitHub Actions</h3>
+                        <h3><span class="section-toggle">▼</span> GitHub Actions</h3>
                         <button type="button" id="add-runner-btn" class="btn-secondary">+ Add Runner</button>
                     </div>
-                    <div class="input-group">
-                        <label for="public-repos">
-                            <input type="checkbox" id="public-repos">
-                            Primarily public repositories (Actions are free)
-                        </label>
-                    </div>
-                    <div id="runners-container">
-                        <!-- Runner configurations will be added here -->
-                    </div>
-                    <div id="total-actions-usage" class="usage-summary hidden">
-                        <strong>Total Monthly Usage:</strong>
-                        <span id="total-actual-minutes"></span> actual minutes =
-                        <span id="total-billed-minutes"></span> billed minutes
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h3>GitHub Packages</h3>
-                    <div class="input-group">
-                        <label for="package-storage">Storage Needed (GB)</label>
-                        <input type="number" id="package-storage" value="2" min="0" max="10000" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label for="package-transfer">Data Transfer per Month (GB)</label>
-                        <input type="number" id="package-transfer" value="5" min="0" max="10000" step="0.1">
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="public-repos">
+                                <input type="checkbox" id="public-repos">
+                                Primarily public repositories (Actions are free)
+                            </label>
+                        </div>
+                        <div id="runners-container">
+                            <!-- Runner configurations will be added here -->
+                        </div>
+                        <div id="total-actions-usage" class="usage-summary hidden">
+                            <strong>Total Monthly Usage:</strong>
+                            <span id="total-actual-minutes"></span> actual minutes =
+                            <span id="total-billed-minutes"></span> billed minutes
+                        </div>
                     </div>
                 </div>
 
-                <div class="section">
-                    <h3>Git LFS</h3>
-                    <div class="input-group">
-                        <label for="lfs-storage">Storage Needed (GB)</label>
-                        <input type="number" id="lfs-storage" value="5" min="0" max="10000" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label for="lfs-bandwidth">Bandwidth per Month (GB)</label>
-                        <input type="number" id="lfs-bandwidth" value="10" min="0" max="10000" step="0.1">
+                <div class="section collapsed" data-section="packages">
+                    <h3><span class="section-toggle">▼</span> GitHub Packages</h3>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="package-storage">Storage Needed (GB)</label>
+                            <input type="number" id="package-storage" value="0" min="0" max="10000" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="package-transfer">Data Transfer per Month (GB)</label>
+                            <input type="number" id="package-transfer" value="0" min="0" max="10000" step="0.1">
+                        </div>
                     </div>
                 </div>
 
-                <div class="section">
+                <div class="section collapsed" data-section="lfs">
+                    <h3><span class="section-toggle">▼</span> Git LFS</h3>
+                    <div class="section-content">
+                        <div class="input-group">
+                            <label for="lfs-storage">Storage Needed (GB)</label>
+                            <input type="number" id="lfs-storage" value="0" min="0" max="10000" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label for="lfs-bandwidth">Bandwidth per Month (GB)</label>
+                            <input type="number" id="lfs-bandwidth" value="0" min="0" max="10000" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section collapsed" data-section="codespaces">
                     <div class="section-header">
-                        <h3>GitHub Codespaces</h3>
+                        <h3><span class="section-toggle">▼</span> GitHub Codespaces</h3>
                         <button type="button" id="add-codespace-btn" class="btn-secondary">+ Add Machine</button>
                     </div>
-                    <div id="codespaces-container">
-                        <!-- Codespace machine configurations will be added here -->
-                    </div>
-                    <div class="input-group">
-                        <label for="stored-codespaces">Stored Codespaces per Developer</label>
-                        <input type="number" id="stored-codespaces" value="3" min="0" max="100">
-                    </div>
-                    <div class="input-group">
-                        <label for="avg-project-size">Average Project Size (GB)</label>
-                        <input type="number" id="avg-project-size" value="10" min="0" max="1000" step="0.1">
-                    </div>
-                    <div id="total-codespaces-usage" class="usage-summary hidden">
-                        <strong>Total Monthly Storage:</strong>
-                        <span id="total-storage-gb"></span> GB
+                    <div class="section-content">
+                        <div id="codespaces-container">
+                            <!-- Codespace machine configurations will be added here -->
+                        </div>
+                        <div class="input-group">
+                            <label for="stored-codespaces">Stored Codespaces per Developer</label>
+                            <input type="number" id="stored-codespaces" value="3" min="0" max="100">
+                        </div>
+                        <div class="input-group">
+                            <label for="avg-project-size">Average Project Size (GB)</label>
+                            <input type="number" id="avg-project-size" value="10" min="0" max="1000" step="0.1">
+                        </div>
+                        <div id="total-codespaces-usage" class="usage-summary hidden">
+                            <strong>Total Monthly Storage:</strong>
+                            <span id="total-storage-gb"></span> GB
+                        </div>
                     </div>
                 </div>
 

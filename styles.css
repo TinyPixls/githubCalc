@@ -87,11 +87,34 @@ h1 {
     margin-bottom: 2rem;
 }
 
+.section.collapsed .section-content {
+    display: none;
+}
+
 .section h3 {
     font-size: 1.1rem;
     margin-bottom: 1rem;
     color: var(--color-accent);
     font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section h3:hover {
+    color: var(--color-accent-hover);
+}
+
+.section-toggle {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    transition: transform 0.2s;
+}
+
+.section.collapsed .section-toggle {
+    transform: rotate(-90deg);
 }
 
 .input-group {
@@ -196,6 +219,7 @@ select:focus {
 
 .section-header h3 {
     margin-bottom: 0;
+    flex: 1;
 }
 
 .runner-card {

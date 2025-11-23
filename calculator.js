@@ -142,6 +142,14 @@ class GitHubPricingCalculator {
         const addCodespaceBtn = document.getElementById('add-codespace-btn');
         addCodespaceBtn.addEventListener('click', () => this.addCodespace());
 
+        // Section collapse/expand
+        document.querySelectorAll('.section h3').forEach(header => {
+            header.addEventListener('click', (e) => {
+                const section = header.closest('.section');
+                section.classList.toggle('collapsed');
+            });
+        });
+
         // Auto-calculate on input change
         document.addEventListener('change', (e) => {
             if (e.target.matches('input, select')) {
