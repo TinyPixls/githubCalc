@@ -335,6 +335,12 @@ select:focus {
     transform: scale(0.98);
 }
 
+.button-container-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
 .usage-summary {
     margin-top: 1rem;
     padding: 1rem;

@@ -30,10 +30,7 @@
 
                 <div class="section" data-section="actions">
                     <div class="section-header-wrapper">
-                        <div class="section-header">
-                            <h3>GitHub Actions</h3>
-                            <button type="button" id="add-runner-btn" class="btn-secondary">+ Add Runner</button>
-                        </div>
+                        <h3>GitHub Actions</h3>
                         <div class="section-checkbox-wrapper">
                             <label class="section-checkbox-label" for="toggle-actions">Use</label>
                             <input type="checkbox" class="section-checkbox" id="toggle-actions" checked>
@@ -49,7 +46,9 @@
                         <div id="runners-container">
                             <!-- Runner configurations will be added here -->
                         </div>
-                        <button type="button" id="add-runner-btn-bottom" class="btn-secondary-full">+ Add Runner</button>
+                        <div class="button-container-right">
+                            <button type="button" id="add-runner-btn-bottom" class="btn-secondary">+ Add Runner</button>
+                        </div>
                         <div id="total-actions-usage" class="usage-summary hidden">
                             <strong>Total Monthly Usage:</strong>
                             <span id="total-actual-minutes"></span> actual minutes =
@@ -100,10 +99,7 @@
 
                 <div class="section collapsed" data-section="codespaces">
                     <div class="section-header-wrapper">
-                        <div class="section-header">
-                            <h3>GitHub Codespaces</h3>
-                            <button type="button" id="add-codespace-btn" class="btn-secondary">+ Add Machine</button>
-                        </div>
+                        <h3>GitHub Codespaces</h3>
                         <div class="section-checkbox-wrapper">
                             <label class="section-checkbox-label" for="toggle-codespaces">Use</label>
                             <input type="checkbox" class="section-checkbox" id="toggle-codespaces">
@@ -113,7 +109,9 @@
                         <div id="codespaces-container">
                             <!-- Codespace machine configurations will be added here -->
                         </div>
-                        <button type="button" id="add-codespace-btn-bottom" class="btn-secondary-full">+ Add Machine</button>
+                        <div class="button-container-right">
+                            <button type="button" id="add-codespace-btn-bottom" class="btn-secondary">+ Add Machine</button>
+                        </div>
                         <div class="input-group">
                             <label for="stored-codespaces">Stored Codespaces per Developer</label>
                             <input type="number" id="stored-codespaces" value="3" min="0" max="100">

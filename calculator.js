@@ -136,14 +136,8 @@ class GitHubPricingCalculator {
         const calculateBtn = document.getElementById('calculate-btn');
         calculateBtn.addEventListener('click', () => this.calculate());
 
-        const addRunnerBtn = document.getElementById('add-runner-btn');
-        addRunnerBtn.addEventListener('click', () => this.addRunner());
-
         const addRunnerBtnBottom = document.getElementById('add-runner-btn-bottom');
         addRunnerBtnBottom.addEventListener('click', () => this.addRunner());
-
-        const addCodespaceBtn = document.getElementById('add-codespace-btn');
-        addCodespaceBtn.addEventListener('click', () => this.addCodespace());
 
         const addCodespaceBtnBottom = document.getElementById('add-codespace-btn-bottom');
         addCodespaceBtnBottom.addEventListener('click', () => this.addCodespace());
@@ -234,12 +228,7 @@ class GitHubPricingCalculator {
             runnerCard.remove();
         }
 
-        // Ensure at least one runner exists
-        if (this.runners.length === 0) {
-            this.addRunner();
-        } else {
-            this.calculate();
-        }
+        this.calculate();
     }
 
     addCodespace() {
@@ -307,12 +296,7 @@ class GitHubPricingCalculator {
             codespaceCard.remove();
         }
 
-        // Ensure at least one codespace exists
-        if (this.codespaces.length === 0) {
-            this.addCodespace();
-        } else {
-            this.calculate();
-        }
+        this.calculate();
     }
 
     getUsageInputs() {
