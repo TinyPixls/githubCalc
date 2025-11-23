@@ -16,7 +16,7 @@
         <div class="calculator-grid">
             <!-- Usage Input Panel -->
             <div class="panel usage-panel">
-                <h2>Your Expected Usage</h2>
+                <h2>Features</h2>
 
                 <div class="section" data-section="team-size">
                     <h3>Team Size</h3>
@@ -24,6 +24,137 @@
                         <div class="input-group">
                             <label for="users">Number of Users</label>
                             <input type="number" id="users" placeholder="e.g. 5" min="1" max="10000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section collapsed" data-section="copilot">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path>
+                            </svg>
+                            GitHub Copilot
+                        </h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-copilot">Use</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="section-checkbox" id="toggle-copilot">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="section-info">
+                        AI-powered code completion and chat assistance. Plans start at Free for individuals, $19/month for organizations
+                    </div>
+                    <div class="section-content">
+                        <!-- Individual Plans -->
+                        <div id="copilot-individual-plans" class="copilot-plans-section">
+                            <h4 class="copilot-section-title">Individual Plans</h4>
+                            <div class="copilot-plan-options">
+                                <label class="copilot-plan-option">
+                                    <input type="radio" name="copilot-plan" value="individual-free" id="copilot-individual-free">
+                                    <div class="copilot-plan-details">
+                                        <div class="copilot-plan-name">Free</div>
+                                        <div class="copilot-plan-description">2,000 completions and 50 chat requests per month</div>
+                                        <div class="copilot-plan-price">$0.00 USD/month</div>
+                                    </div>
+                                </label>
+                                <label class="copilot-plan-option">
+                                    <input type="radio" name="copilot-plan" value="individual-pro" id="copilot-individual-pro">
+                                    <div class="copilot-plan-details">
+                                        <div class="copilot-plan-name">Pro</div>
+                                        <div class="copilot-plan-description">Unlimited code completion, chat assistance, and mobile access</div>
+                                        <div class="copilot-plan-price">$10.00 USD/month</div>
+                                    </div>
+                                </label>
+                                <label class="copilot-plan-option">
+                                    <input type="radio" name="copilot-plan" value="individual-pro-plus" id="copilot-individual-pro-plus">
+                                    <div class="copilot-plan-details">
+                                        <div class="copilot-plan-name">Pro+</div>
+                                        <div class="copilot-plan-description">Maximum flexibility and model choice</div>
+                                        <div class="copilot-plan-price">$39.00 USD/month</div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div id="copilot-individual-disabled-message" class="copilot-disabled-message" style="display: none;">
+                                Individual plans are only available when Team Size is set to 1 user.
+                            </div>
+                        </div>
+
+                        <!-- Organization Plans -->
+                        <div class="copilot-plans-section">
+                            <h4 class="copilot-section-title">Organization Plans</h4>
+                            <div class="copilot-plan-options">
+                                <label class="copilot-plan-option">
+                                    <input type="radio" name="copilot-plan" value="org-business" id="copilot-org-business">
+                                    <div class="copilot-plan-details">
+                                        <div class="copilot-plan-name">Business</div>
+                                        <div class="copilot-plan-description">Team-wide AI pair programming with enterprise-grade security and management</div>
+                                        <div class="copilot-plan-price">$19.00 USD/month per developer</div>
+                                    </div>
+                                </label>
+                                <label class="copilot-plan-option">
+                                    <input type="radio" name="copilot-plan" value="org-enterprise" id="copilot-org-enterprise">
+                                    <div class="copilot-plan-details">
+                                        <div class="copilot-plan-name">Enterprise</div>
+                                        <div class="copilot-plan-description">Custom deployment with advanced security, compliance, and policy controls</div>
+                                        <div class="copilot-plan-price">$39.00 USD/month per developer</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Overage Fees -->
+                        <div class="copilot-plans-section">
+                            <h4 class="copilot-section-title">Overage Fees</h4>
+                            <p class="copilot-overage-description">GitHub Copilot requests exceeding the plan's request limit. See the GitHub Copilot documentation for details.</p>
+                            <div class="input-group">
+                                <label for="copilot-overage-requests">Overage requests per month ($0.04 USD per request)</label>
+                                <input type="number" id="copilot-overage-requests" placeholder="0" min="0" max="1000000">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section collapsed" data-section="codespaces">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            GitHub Codespaces
+                        </h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-codespaces">Use</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="section-checkbox" id="toggle-codespaces">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="section-info">
+                        Compute from $0.18/hour (2-core), Storage $0.07/GB/month
+                    </div>
+                    <div class="section-content">
+                        <div id="codespaces-container">
+                            <!-- Codespace machine configurations will be added here -->
+                        </div>
+                        <div class="button-container-right">
+                            <button type="button" id="add-codespace-btn-bottom" class="btn-secondary">+ Add Machine</button>
+                        </div>
+                        <div class="input-group">
+                            <label for="stored-codespaces">Stored Codespaces per Developer</label>
+                            <input type="number" id="stored-codespaces" placeholder="e.g. 3" min="0" max="100">
+                        </div>
+                        <div class="input-group">
+                            <label for="avg-project-size">Average Project Size (GB)</label>
+                            <input type="number" id="avg-project-size" placeholder="e.g. 10" min="0" max="1000" step="0.1">
+                        </div>
+                        <div id="total-codespaces-usage" class="usage-summary hidden">
+                            <strong>Total Monthly Storage:</strong>
+                            <span id="total-storage-gb"></span> GB
                         </div>
                     </div>
                 </div>
@@ -133,48 +264,6 @@
                         <div class="input-group">
                             <label for="lfs-bandwidth">Bandwidth per Month (GB)</label>
                             <input type="number" id="lfs-bandwidth" placeholder="0" min="0" max="10000" step="0.1">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section collapsed" data-section="codespaces">
-                    <div class="section-header-wrapper">
-                        <h3>
-                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="16 18 22 12 16 6"></polyline>
-                                <polyline points="8 6 2 12 8 18"></polyline>
-                            </svg>
-                            GitHub Codespaces
-                        </h3>
-                        <div class="section-checkbox-wrapper">
-                            <label class="section-checkbox-label" for="toggle-codespaces">Use</label>
-                            <label class="toggle-switch">
-                                <input type="checkbox" class="section-checkbox" id="toggle-codespaces">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="section-info">
-                        Compute from $0.18/hour (2-core), Storage $0.07/GB/month
-                    </div>
-                    <div class="section-content">
-                        <div id="codespaces-container">
-                            <!-- Codespace machine configurations will be added here -->
-                        </div>
-                        <div class="button-container-right">
-                            <button type="button" id="add-codespace-btn-bottom" class="btn-secondary">+ Add Machine</button>
-                        </div>
-                        <div class="input-group">
-                            <label for="stored-codespaces">Stored Codespaces per Developer</label>
-                            <input type="number" id="stored-codespaces" placeholder="e.g. 3" min="0" max="100">
-                        </div>
-                        <div class="input-group">
-                            <label for="avg-project-size">Average Project Size (GB)</label>
-                            <input type="number" id="avg-project-size" placeholder="e.g. 10" min="0" max="1000" step="0.1">
-                        </div>
-                        <div id="total-codespaces-usage" class="usage-summary hidden">
-                            <strong>Total Monthly Storage:</strong>
-                            <span id="total-storage-gb"></span> GB
                         </div>
                     </div>
                 </div>

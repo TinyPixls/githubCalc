@@ -120,6 +120,14 @@ const PRICING = {
     ghas: {
         codeSecurity: 30.00, // Per committer per month
         secretProtection: 19.00 // Per committer per month
+    },
+    copilot: {
+        individualFree: 0,
+        individualPro: 10,
+        individualProPlus: 39,
+        orgBusiness: 19, // Per developer per month
+        orgEnterprise: 39, // Per developer per month
+        overageRate: 0.04 // Per request
     }
 };
 
@@ -166,6 +174,41 @@ class GitHubPricingCalculator {
                 this.calculate();
             }
         });
+
+        // Team size change listener for Copilot plan validation
+        const usersInput = document.getElementById('users');
+        usersInput.addEventListener('input', () => {
+            this.updateCopilotPlanAvailability();
+        });
+
+        // Initialize Copilot plan availability
+        this.updateCopilotPlanAvailability();
+    }
+
+    updateCopilotPlanAvailability() {
+        const users = parseInt(document.getElementById('users').value) || 1;
+        const individualPlans = document.getElementById('copilot-individual-plans');
+        const disabledMessage = document.getElementById('copilot-individual-disabled-message');
+        const individualRadios = document.querySelectorAll('input[name="copilot-plan"][value^="individual-"]');
+
+        if (users > 1) {
+            // Disable individual plans
+            individualRadios.forEach(radio => {
+                radio.disabled = true;
+                if (radio.checked) {
+                    radio.checked = false;
+                }
+            });
+            disabledMessage.style.display = 'block';
+            individualPlans.style.opacity = '0.5';
+        } else {
+            // Enable individual plans
+            individualRadios.forEach(radio => {
+                radio.disabled = false;
+            });
+            disabledMessage.style.display = 'none';
+            individualPlans.style.opacity = '1';
+        }
     }
 
     addRunner() {
@@ -419,6 +462,7 @@ class GitHubPricingCalculator {
 
     getUsageInputs() {
         // Check which sections are enabled (team size is always enabled)
+        const copilotEnabled = document.getElementById('toggle-copilot').checked;
         const actionsEnabled = document.getElementById('toggle-actions').checked;
         const packagesEnabled = document.getElementById('toggle-packages').checked;
         const lfsEnabled = document.getElementById('toggle-lfs').checked;
@@ -451,8 +495,14 @@ class GitHubPricingCalculator {
             };
         }) : [];
 
+        // Get selected Copilot plan
+        const copilotPlanRadio = copilotEnabled ? document.querySelector('input[name="copilot-plan"]:checked') : null;
+        const copilotPlan = copilotPlanRadio ? copilotPlanRadio.value : null;
+
         return {
             users: parseInt(document.getElementById('users').value) || 1,
+            copilotPlan: copilotPlan,
+            copilotOverageRequests: copilotEnabled ? (parseInt(document.getElementById('copilot-overage-requests').value) || 0) : 0,
             runners: runnerConfigs,
             publicRepos: actionsEnabled ? document.getElementById('public-repos').checked : false,
             packageStorage: packagesEnabled ? (parseFloat(document.getElementById('package-storage').value) || 0) : 0,
@@ -505,11 +555,13 @@ class GitHubPricingCalculator {
 
         let breakdown = {
             baseCost: plan.perUser * usage.users,
+            copilotCost: 0,
             actionsCost: 0,
             packagesCost: 0,
             lfsCost: 0,
             codespacesCost: 0,
             ghasCost: 0,
+            copilotDetails: {},
             actionsDetails: {},
             packagesDetails: {},
             lfsDetails: {},
@@ -524,6 +576,49 @@ class GitHubPricingCalculator {
             breakdown.canSupport = false;
             breakdown.reasons.push(`Pro plan only supports 1 user (you have ${usage.users} users)`);
         }
+
+        // GitHub Copilot calculation
+        let copilotBaseCost = 0;
+        let copilotOverageCost = 0;
+        let copilotPlanName = '';
+
+        if (usage.copilotPlan) {
+            switch (usage.copilotPlan) {
+                case 'individual-free':
+                    copilotBaseCost = PRICING.copilot.individualFree;
+                    copilotPlanName = 'Individual Free';
+                    break;
+                case 'individual-pro':
+                    copilotBaseCost = PRICING.copilot.individualPro;
+                    copilotPlanName = 'Individual Pro';
+                    break;
+                case 'individual-pro-plus':
+                    copilotBaseCost = PRICING.copilot.individualProPlus;
+                    copilotPlanName = 'Individual Pro+';
+                    break;
+                case 'org-business':
+                    copilotBaseCost = PRICING.copilot.orgBusiness * usage.users;
+                    copilotPlanName = 'Business';
+                    break;
+                case 'org-enterprise':
+                    copilotBaseCost = PRICING.copilot.orgEnterprise * usage.users;
+                    copilotPlanName = 'Enterprise';
+                    break;
+            }
+
+            if (usage.copilotOverageRequests > 0) {
+                copilotOverageCost = usage.copilotOverageRequests * PRICING.copilot.overageRate;
+            }
+        }
+
+        breakdown.copilotCost = copilotBaseCost + copilotOverageCost;
+        breakdown.copilotDetails = {
+            plan: copilotPlanName,
+            baseCost: copilotBaseCost,
+            overageRequests: usage.copilotOverageRequests,
+            overageCost: copilotOverageCost,
+            users: usage.users
+        };
 
         // GitHub Actions calculation
         const includedMinutes = plan.actions.includedMinutes;
@@ -688,6 +783,7 @@ class GitHubPricingCalculator {
         // Total cost
         breakdown.totalCost =
             breakdown.baseCost +
+            breakdown.copilotCost +
             breakdown.actionsCost +
             breakdown.packagesCost +
             breakdown.lfsCost +
@@ -815,6 +911,31 @@ class GitHubPricingCalculator {
                     <span class="cost-value">${isProUserLimit ? 'N/A' : '$' + breakdown.baseCost.toFixed(2)}</span>
                 </div>
             `;
+        }
+
+        // Copilot
+        if (breakdown.copilotDetails.plan) {
+            const details = breakdown.copilotDetails;
+            const isOrgPlan = this.usage.copilotPlan && this.usage.copilotPlan.startsWith('org-');
+            const planLabel = isOrgPlan ?
+                `Copilot ${details.plan} (${details.users} user${details.users > 1 ? 's' : ''})` :
+                `Copilot ${details.plan}`;
+
+            costBreakdownHtml += `
+                <div class="cost-item">
+                    <span class="cost-label">${planLabel}</span>
+                    <span class="cost-value overage">$${details.baseCost.toFixed(2)}</span>
+                </div>
+            `;
+
+            if (details.overageRequests > 0) {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">Copilot Overage (${details.overageRequests.toLocaleString()} requests)</span>
+                        <span class="cost-value overage">+$${details.overageCost.toFixed(2)}</span>
+                    </div>
+                `;
+            }
         }
 
         // Actions
