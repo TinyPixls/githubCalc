@@ -228,6 +228,11 @@ class GitHubPricingCalculator {
             runnerCard.remove();
         }
 
+        // Reset counter if all runners are removed
+        if (this.runners.length === 0) {
+            this.runnerIdCounter = 0;
+        }
+
         this.calculate();
     }
 
@@ -294,6 +299,11 @@ class GitHubPricingCalculator {
         const codespaceCard = document.getElementById(`codespace-${codespaceId}`);
         if (codespaceCard) {
             codespaceCard.remove();
+        }
+
+        // Reset counter if all codespaces are removed
+        if (this.codespaces.length === 0) {
+            this.codespaceIdCounter = 0;
         }
 
         this.calculate();
