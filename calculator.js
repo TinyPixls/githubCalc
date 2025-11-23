@@ -994,15 +994,15 @@ class GitHubPricingCalculator {
             const details = breakdown.lfsDetails;
             costBreakdownHtml += `
                 <div class="cost-item">
-                    <span class="cost-label">LFS Storage (${details.storageUsed} GB / ${details.storageIncluded} GB)</span>
+                    <span class="cost-label">LFS Storage (${details.storageUsed} GiB / ${details.storageIncluded} GiB free)</span>
                     <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
-                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included'}
+                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included in free tier'}
                     </span>
                 </div>
                 <div class="cost-item">
-                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GB / ${details.bandwidthIncluded} GB)</span>
+                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GiB / ${details.bandwidthIncluded} GiB free)</span>
                     <span class="cost-value ${details.bandwidthOverage > 0 ? 'overage' : 'included'}">
-                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included'}
+                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included in free tier'}
                     </span>
                 </div>
             `;

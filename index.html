@@ -254,15 +254,27 @@
                         </div>
                     </div>
                     <div class="section-info">
-                        Storage $0.07/GB/month, Bandwidth $0.0875/GB
+                        Free tier varies by plan. Additional storage $0.07/GiB, additional data transfer out $0.0875/GiB
                     </div>
                     <div class="section-content">
+                        <p class="lfs-description">In the future, Git LFS will switch to metered billing. It comes with a generous free tier which varies by plan type. Additional storage $0.07 per GiB, additional data transfer out $0.0875 per GiB.</p>
+                        <div class="lfs-free-tiers">
+                            <div class="free-tier-item">
+                                <strong>Free plan:</strong> First 10 GiB storage and bandwidth free each month
+                            </div>
+                            <div class="free-tier-item">
+                                <strong>Pro plan:</strong> First 10 GiB storage and bandwidth free each month
+                            </div>
+                            <div class="free-tier-item">
+                                <strong>Teams or Enterprise plan:</strong> First 250 GiB storage and bandwidth free each month
+                            </div>
+                        </div>
                         <div class="input-group">
-                            <label for="lfs-storage">Storage Needed (GB)</label>
+                            <label for="lfs-storage">Storage Needed (GiB)</label>
                             <input type="number" id="lfs-storage" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
                         <div class="input-group">
-                            <label for="lfs-bandwidth">Bandwidth per Month (GB)</label>
+                            <label for="lfs-bandwidth">Bandwidth per Month (GiB)</label>
                             <input type="number" id="lfs-bandwidth" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
                     </div>
