@@ -240,9 +240,9 @@ class GitHubPricingCalculator {
                 <div class="input-group">
                     <label for="runner-${runnerId}-type">Runner Type</label>
                     <select id="runner-${runnerId}-type" data-runner-id="${runnerId}">
-                        <option value="linux">Ubuntu Linux (1x multiplier)</option>
-                        <option value="windows">Windows (2x multiplier)</option>
-                        <option value="macos">macOS (10x multiplier)</option>
+                        <option value="linux">Ubuntu Linux - $0.48 USD/hr</option>
+                        <option value="windows">Windows - $0.96 USD/hr</option>
+                        <option value="macos">macOS - $4.80 USD/hr</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -299,7 +299,7 @@ class GitHubPricingCalculator {
                                type === 'windows' ? 'Windows' : 'macOS';
             summaryElement.textContent = `${jobs} jobs/day of ${duration} min each on ${typeDisplay}`;
         } else {
-            summaryElement.textContent = '';
+            summaryElement.textContent = 'Not configured';
         }
     }
 
@@ -424,7 +424,7 @@ class GitHubPricingCalculator {
             const hoursText = hours === 1 ? 'hr' : 'hrs';
             summaryElement.textContent = `${developers} ${developerText}, ${hours} ${hoursText}/week on ${cores}-core machine`;
         } else {
-            summaryElement.textContent = '';
+            summaryElement.textContent = 'Not configured';
         }
     }
 
