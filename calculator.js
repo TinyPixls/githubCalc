@@ -235,6 +235,9 @@ class GitHubPricingCalculator {
             case 'copilot':
                 this.updateCopilotSummary(summaryElement);
                 break;
+            case 'actions':
+                this.updateActionsSummary(summaryElement);
+                break;
             // Add other sections as needed
             default:
                 summaryElement.textContent = 'Not configured';
@@ -246,6 +249,7 @@ class GitHubPricingCalculator {
         const teamSize = parseInt(document.getElementById('users').value) || 1;
         const effectiveUsers = copilotUsers > 0 ? copilotUsers : teamSize;
         const selectedPlan = document.querySelector('input[name="copilot-plan"]:checked');
+        const overageRequests = parseInt(document.getElementById('copilot-overage-requests').value) || 0;
 
         if (!selectedPlan) {
             element.textContent = 'Not configured';
@@ -262,7 +266,48 @@ class GitHubPricingCalculator {
 
         const planName = planNames[selectedPlan.value] || 'Unknown';
         const userText = effectiveUsers > 1 ? `${effectiveUsers} users` : '1 user';
-        element.textContent = `${planName} plan for ${userText}`;
+
+        let summary = `${planName} plan for ${userText}`;
+        if (overageRequests > 0) {
+            summary += `, ${overageRequests.toLocaleString()} overage requests`;
+        }
+        element.textContent = summary;
+    }
+
+    updateActionsSummary(element) {
+        const runnerCount = this.runners.length;
+
+        if (runnerCount === 0) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        // Count configured runners (those with jobs and duration)
+        let configuredCount = 0;
+        let totalJobs = 0;
+
+        this.runners.forEach(runnerId => {
+            const jobsInput = document.getElementById(`runner-${runnerId}-jobs`);
+            const durationInput = document.getElementById(`runner-${runnerId}-duration`);
+
+            if (jobsInput && durationInput) {
+                const jobs = parseInt(jobsInput.value) || 0;
+                const duration = parseInt(durationInput.value) || 0;
+
+                if (jobs > 0 && duration > 0) {
+                    configuredCount++;
+                    totalJobs += jobs;
+                }
+            }
+        });
+
+        if (configuredCount === 0) {
+            element.textContent = `${runnerCount} runner${runnerCount > 1 ? 's' : ''} added, none configured`;
+        } else {
+            const runnerText = configuredCount === 1 ? 'runner' : 'runners';
+            const jobText = totalJobs === 1 ? 'job' : 'jobs';
+            element.textContent = `${configuredCount} ${runnerText}, ${totalJobs} ${jobText}/day`;
+        }
     }
 
     validateFields() {
