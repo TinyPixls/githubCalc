@@ -331,18 +331,23 @@ select:focus {
 }
 
 .btn-remove {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem;
     background: transparent;
-    color: var(--color-danger);
-    border: 1px solid var(--color-danger);
-    border-radius: var(--border-radius);
-    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    border: none;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-remove:hover {
-    background: rgba(218, 54, 51, 0.1);
+    color: #da3633;
+}
+
+.btn-remove svg {
+    display: block;
 }
 
 .section-header {
@@ -421,8 +426,8 @@ select:focus {
 
 .runner-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 0.75rem;
     margin-bottom: 1rem;
 }
 
@@ -430,16 +435,11 @@ select:focus {
     margin-bottom: 0;
 }
 
-.runner-header-buttons {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
 .runner-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--color-text);
+    flex: 1;
 }
 
 .runner-inputs {
