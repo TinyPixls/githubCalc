@@ -179,19 +179,82 @@ class GitHubPricingCalculator {
         const usersInput = document.getElementById('users');
         usersInput.addEventListener('input', () => {
             this.updateCopilotPlanAvailability();
+            this.validateFields();
         });
 
-        // Initialize Copilot plan availability
+        // Copilot users change listener
+        const copilotUsersInput = document.getElementById('copilot-users');
+        copilotUsersInput.addEventListener('input', () => {
+            this.updateCopilotPlanAvailability();
+            this.validateFields();
+        });
+
+        // GHAS committers validation listener
+        const ghasCommittersInput = document.getElementById('ghas-committers');
+        ghasCommittersInput.addEventListener('input', () => {
+            this.validateFields();
+        });
+
+        // Initialize Copilot plan availability and validation
         this.updateCopilotPlanAvailability();
+        this.validateFields();
+    }
+
+    validateFields() {
+        const teamSize = parseInt(document.getElementById('users').value) || 0;
+
+        // Validate Copilot users
+        const copilotUsersInput = document.getElementById('copilot-users');
+        const copilotUsers = parseInt(copilotUsersInput.value) || 0;
+        const copilotUsersError = document.getElementById('copilot-users-error');
+
+        if (copilotUsers > teamSize && teamSize > 0) {
+            copilotUsersError.style.display = 'block';
+            copilotUsersInput.classList.add('has-error');
+        } else {
+            copilotUsersError.style.display = 'none';
+            copilotUsersInput.classList.remove('has-error');
+        }
+
+        // Validate GHAS committers
+        const ghasCommittersInput = document.getElementById('ghas-committers');
+        const ghasCommitters = parseInt(ghasCommittersInput.value) || 0;
+        const ghasCommittersError = document.getElementById('ghas-committers-error');
+
+        if (ghasCommitters > teamSize && teamSize > 0) {
+            ghasCommittersError.style.display = 'block';
+            ghasCommittersInput.classList.add('has-error');
+        } else {
+            ghasCommittersError.style.display = 'none';
+            ghasCommittersInput.classList.remove('has-error');
+        }
+
+        // Validate all codespace developers
+        this.codespaces.forEach(codespaceId => {
+            const developersInput = document.getElementById(`codespace-${codespaceId}-developers`);
+            const developersError = document.getElementById(`codespace-${codespaceId}-developers-error`);
+            if (developersInput && developersError) {
+                const developers = parseInt(developersInput.value) || 0;
+                if (developers > teamSize && teamSize > 0) {
+                    developersError.style.display = 'block';
+                    developersInput.classList.add('has-error');
+                } else {
+                    developersError.style.display = 'none';
+                    developersInput.classList.remove('has-error');
+                }
+            }
+        });
     }
 
     updateCopilotPlanAvailability() {
         const users = parseInt(document.getElementById('users').value) || 1;
+        const copilotUsers = parseInt(document.getElementById('copilot-users').value) || 0;
         const individualPlans = document.getElementById('copilot-individual-plans');
         const disabledMessage = document.getElementById('copilot-individual-disabled-message');
         const individualRadios = document.querySelectorAll('input[name="copilot-plan"][value^="individual-"]');
 
-        if (users > 1) {
+        // Disable individual plans if team size > 1 OR copilot users > 1
+        if (users > 1 || copilotUsers > 1) {
             // Disable individual plans
             individualRadios.forEach(radio => {
                 radio.disabled = true;
@@ -377,6 +440,7 @@ class GitHubPricingCalculator {
                 <div class="input-group">
                     <label for="codespace-${codespaceId}-developers">Number of Developers</label>
                     <input type="number" id="codespace-${codespaceId}-developers" data-codespace-id="${codespaceId}" placeholder="e.g. 1" min="0" max="1000">
+                    <span class="validation-error" id="codespace-${codespaceId}-developers-error" style="display: none;">Cannot exceed team size</span>
                 </div>
                 <div class="input-group">
                     <label for="codespace-${codespaceId}-hours">Hours per Week per Developer</label>
@@ -404,11 +468,15 @@ class GitHubPricingCalculator {
 
         const updateSummary = () => this.updateCodespaceSummary(codespaceId);
         coresSelect.addEventListener('change', updateSummary);
-        developersInput.addEventListener('input', updateSummary);
+        developersInput.addEventListener('input', () => {
+            updateSummary();
+            this.validateFields();
+        });
         hoursInput.addEventListener('input', updateSummary);
 
-        // Initialize summary
+        // Initialize summary and validation
         this.updateCodespaceSummary(codespaceId);
+        this.validateFields();
 
         this.calculate();
     }
@@ -508,6 +576,7 @@ class GitHubPricingCalculator {
         return {
             users: parseInt(document.getElementById('users').value) || 1,
             copilotPlan: copilotPlan,
+            copilotUsers: copilotEnabled ? (parseInt(document.getElementById('copilot-users').value) || 0) : 0,
             copilotOverageRequests: copilotEnabled ? (parseInt(document.getElementById('copilot-overage-requests').value) || 0) : 0,
             runners: runnerConfigs,
             publicRepos: actionsEnabled ? document.getElementById('public-repos').checked : false,
@@ -603,11 +672,11 @@ class GitHubPricingCalculator {
                     copilotPlanName = 'Individual Pro+';
                     break;
                 case 'org-business':
-                    copilotBaseCost = PRICING.copilot.orgBusiness * usage.users;
+                    copilotBaseCost = PRICING.copilot.orgBusiness * usage.copilotUsers;
                     copilotPlanName = 'Business';
                     break;
                 case 'org-enterprise':
-                    copilotBaseCost = PRICING.copilot.orgEnterprise * usage.users;
+                    copilotBaseCost = PRICING.copilot.orgEnterprise * usage.copilotUsers;
                     copilotPlanName = 'Enterprise';
                     break;
             }
@@ -623,7 +692,7 @@ class GitHubPricingCalculator {
             baseCost: copilotBaseCost,
             overageRequests: usage.copilotOverageRequests,
             overageCost: copilotOverageCost,
-            users: usage.users
+            users: usage.copilotUsers
         };
 
         // GitHub Actions calculation

@@ -78,7 +78,7 @@
                                 </label>
                             </div>
                             <div id="copilot-individual-disabled-message" class="copilot-disabled-message" style="display: none;">
-                                Individual plans are only available when Team Size is set to 1 user.
+                                Individual plans are only available when Team Size and Number of Copilot Users are both set to 1 or less.
                             </div>
                         </div>
 
@@ -102,6 +102,11 @@
                                         <div class="copilot-plan-price">$39.00 USD/month per developer</div>
                                     </div>
                                 </label>
+                            </div>
+                            <div class="input-group">
+                                <label for="copilot-users">Number of Copilot Users</label>
+                                <input type="number" id="copilot-users" placeholder="Enter number of users" min="0" max="100000">
+                                <span class="validation-error" id="copilot-users-error" style="display: none;">Cannot exceed team size</span>
                             </div>
                         </div>
 
@@ -304,6 +309,7 @@
                         <div class="input-group">
                             <label for="ghas-committers">Number of Committers</label>
                             <input type="number" id="ghas-committers" placeholder="e.g. 10" min="0" max="10000">
+                            <span class="validation-error" id="ghas-committers-error" style="display: none;">Cannot exceed team size</span>
                         </div>
                         <div class="ghas-products">
                             <div class="toggle-option">

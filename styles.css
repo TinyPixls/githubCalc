@@ -889,6 +889,25 @@ select:focus {
     color: var(--color-text);
 }
 
+/* Validation Error Styles */
+.validation-error {
+    display: block;
+    color: var(--color-danger);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.input-group input.has-error {
+    border-color: var(--color-danger);
+    background-color: rgba(207, 34, 46, 0.05);
+}
+
+.input-group input.has-error:focus {
+    outline-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(207, 34, 46, 0.1);
+}
+
 @media (max-width: 1024px) {
     .calculator-grid {
         grid-template-columns: 1fr;
