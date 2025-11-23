@@ -225,15 +225,28 @@ class GitHubPricingCalculator {
 
         const runnerCard = document.getElementById(`runner-${runnerId}`);
         if (runnerCard) {
-            runnerCard.remove();
-        }
+            // Add removing class for animation
+            runnerCard.classList.add('removing');
 
-        // Reset counter if all runners are removed
-        if (this.runners.length === 0) {
-            this.runnerIdCounter = 0;
-        }
+            // Wait for animation to complete before removing
+            setTimeout(() => {
+                runnerCard.remove();
 
-        this.calculate();
+                // Reset counter if all runners are removed
+                if (this.runners.length === 0) {
+                    this.runnerIdCounter = 0;
+                }
+
+                this.calculate();
+            }, 300); // Match the animation duration
+        } else {
+            // Reset counter if all runners are removed
+            if (this.runners.length === 0) {
+                this.runnerIdCounter = 0;
+            }
+
+            this.calculate();
+        }
     }
 
     addCodespace() {
@@ -298,15 +311,28 @@ class GitHubPricingCalculator {
 
         const codespaceCard = document.getElementById(`codespace-${codespaceId}`);
         if (codespaceCard) {
-            codespaceCard.remove();
-        }
+            // Add removing class for animation
+            codespaceCard.classList.add('removing');
 
-        // Reset counter if all codespaces are removed
-        if (this.codespaces.length === 0) {
-            this.codespaceIdCounter = 0;
-        }
+            // Wait for animation to complete before removing
+            setTimeout(() => {
+                codespaceCard.remove();
 
-        this.calculate();
+                // Reset counter if all codespaces are removed
+                if (this.codespaces.length === 0) {
+                    this.codespaceIdCounter = 0;
+                }
+
+                this.calculate();
+            }, 300); // Match the animation duration
+        } else {
+            // Reset counter if all codespaces are removed
+            if (this.codespaces.length === 0) {
+                this.codespaceIdCounter = 0;
+            }
+
+            this.calculate();
+        }
     }
 
     getUsageInputs() {
