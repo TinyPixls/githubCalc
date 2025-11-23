@@ -449,11 +449,31 @@ select:focus {
     margin-bottom: 0;
 }
 
+.runner-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
 .runner-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--color-text);
-    flex: 1;
+}
+
+.runner-summary {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-out, max-height 0.3s ease-out;
+}
+
+.runner-card.collapsed .runner-summary {
+    opacity: 1;
+    max-height: 50px;
 }
 
 .runner-inputs {

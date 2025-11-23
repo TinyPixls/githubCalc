@@ -180,7 +180,10 @@ class GitHubPricingCalculator {
         runnerCard.innerHTML = `
             <div class="runner-header">
                 <button type="button" class="btn-collapse" data-runner-id="${runnerId}">▼</button>
-                <span class="runner-title">Runner #${runnerId + 1}</span>
+                <div class="runner-title-container">
+                    <span class="runner-title">Runner #${runnerId + 1}</span>
+                    <span class="runner-summary" id="runner-summary-${runnerId}"></span>
+                </div>
                 <button type="button" class="btn-remove" data-runner-id="${runnerId}">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -223,7 +226,38 @@ class GitHubPricingCalculator {
         const removeBtn = runnerCard.querySelector('.btn-remove');
         removeBtn.addEventListener('click', () => this.removeRunner(runnerId));
 
+        // Add input listeners to update summary
+        const typeSelect = runnerCard.querySelector(`#runner-${runnerId}-type`);
+        const jobsInput = runnerCard.querySelector(`#runner-${runnerId}-jobs`);
+        const durationInput = runnerCard.querySelector(`#runner-${runnerId}-duration`);
+
+        const updateSummary = () => this.updateRunnerSummary(runnerId);
+        typeSelect.addEventListener('change', updateSummary);
+        jobsInput.addEventListener('input', updateSummary);
+        durationInput.addEventListener('input', updateSummary);
+
         this.calculate();
+    }
+
+    updateRunnerSummary(runnerId) {
+        const typeSelect = document.getElementById(`runner-${runnerId}-type`);
+        const jobsInput = document.getElementById(`runner-${runnerId}-jobs`);
+        const durationInput = document.getElementById(`runner-${runnerId}-duration`);
+        const summaryElement = document.getElementById(`runner-summary-${runnerId}`);
+
+        if (!typeSelect || !jobsInput || !durationInput || !summaryElement) return;
+
+        const jobs = parseInt(jobsInput.value) || 0;
+        const duration = parseInt(durationInput.value) || 0;
+        const type = typeSelect.value;
+
+        if (jobs > 0 && duration > 0) {
+            const typeDisplay = type === 'linux' ? 'Ubuntu Linux' :
+                               type === 'windows' ? 'Windows' : 'macOS';
+            summaryElement.textContent = `${jobs} jobs/day of ${duration} min each on ${typeDisplay}`;
+        } else {
+            summaryElement.textContent = '';
+        }
     }
 
     removeRunner(runnerId) {
@@ -270,7 +304,10 @@ class GitHubPricingCalculator {
         codespaceCard.innerHTML = `
             <div class="runner-header">
                 <button type="button" class="btn-collapse" data-codespace-id="${codespaceId}">▼</button>
-                <span class="runner-title">Machine #${codespaceId + 1}</span>
+                <div class="runner-title-container">
+                    <span class="runner-title">Machine #${codespaceId + 1}</span>
+                    <span class="runner-summary" id="codespace-summary-${codespaceId}"></span>
+                </div>
                 <button type="button" class="btn-remove" data-codespace-id="${codespaceId}">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -314,7 +351,38 @@ class GitHubPricingCalculator {
         const removeBtn = codespaceCard.querySelector('.btn-remove');
         removeBtn.addEventListener('click', () => this.removeCodespace(codespaceId));
 
+        // Add input listeners to update summary
+        const coresSelect = codespaceCard.querySelector(`#codespace-${codespaceId}-cores`);
+        const developersInput = codespaceCard.querySelector(`#codespace-${codespaceId}-developers`);
+        const hoursInput = codespaceCard.querySelector(`#codespace-${codespaceId}-hours`);
+
+        const updateSummary = () => this.updateCodespaceSummary(codespaceId);
+        coresSelect.addEventListener('change', updateSummary);
+        developersInput.addEventListener('input', updateSummary);
+        hoursInput.addEventListener('input', updateSummary);
+
         this.calculate();
+    }
+
+    updateCodespaceSummary(codespaceId) {
+        const coresSelect = document.getElementById(`codespace-${codespaceId}-cores`);
+        const developersInput = document.getElementById(`codespace-${codespaceId}-developers`);
+        const hoursInput = document.getElementById(`codespace-${codespaceId}-hours`);
+        const summaryElement = document.getElementById(`codespace-summary-${codespaceId}`);
+
+        if (!coresSelect || !developersInput || !hoursInput || !summaryElement) return;
+
+        const developers = parseInt(developersInput.value) || 0;
+        const hours = parseFloat(hoursInput.value) || 0;
+        const cores = parseInt(coresSelect.value);
+
+        if (developers > 0 && hours > 0) {
+            const developerText = developers === 1 ? 'developer' : 'developers';
+            const hoursText = hours === 1 ? 'hr' : 'hrs';
+            summaryElement.textContent = `${developers} ${developerText}, ${hours} ${hoursText}/week on ${cores}-core machine`;
+        } else {
+            summaryElement.textContent = '';
+        }
     }
 
     removeCodespace(codespaceId) {
