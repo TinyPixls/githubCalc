@@ -154,6 +154,7 @@ h1 {
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     margin-bottom: 1rem;
+    transition: opacity 0.3s ease-out;
 }
 
 .toggle-label {
@@ -225,6 +226,7 @@ h1 {
 
 .input-group {
     margin-bottom: 1rem;
+    transition: opacity 0.3s ease-out;
 }
 
 .input-group label {
@@ -462,6 +464,7 @@ select:focus {
     display: flex;
     justify-content: flex-end;
     margin-top: 1rem;
+    transition: opacity 0.3s ease-out;
 }
 
 .usage-summary {
@@ -473,10 +476,18 @@ select:focus {
     color: var(--color-text);
     font-size: 0.9rem;
     box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin-top 0.3s ease-out, padding 0.3s ease-out;
+    max-height: 200px;
+    opacity: 1;
 }
 
 .usage-summary.hidden {
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .recommendation {
@@ -486,10 +497,18 @@ select:focus {
     margin-bottom: 2rem;
     border: 2px solid var(--color-accent);
     box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin-bottom 0.3s ease-out, padding 0.3s ease-out;
+    max-height: 500px;
+    opacity: 1;
 }
 
 .recommendation.hidden {
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .recommendation-content h3 {
