@@ -23,7 +23,7 @@
                     <div class="section-content">
                         <div class="input-group">
                             <label for="users">Number of Users</label>
-                            <input type="number" id="users" value="5" min="1" max="10000">
+                            <input type="number" id="users" placeholder="e.g. 5" min="1" max="10000">
                         </div>
                     </div>
                 </div>
@@ -96,11 +96,11 @@
                     <div class="section-content">
                         <div class="input-group">
                             <label for="package-storage">Storage Needed (GB)</label>
-                            <input type="number" id="package-storage" value="0" min="0" max="10000" step="0.1">
+                            <input type="number" id="package-storage" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
                         <div class="input-group">
                             <label for="package-transfer">Data Transfer per Month (GB)</label>
-                            <input type="number" id="package-transfer" value="0" min="0" max="10000" step="0.1">
+                            <input type="number" id="package-transfer" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
                     </div>
                 </div>
@@ -128,11 +128,11 @@
                     <div class="section-content">
                         <div class="input-group">
                             <label for="lfs-storage">Storage Needed (GB)</label>
-                            <input type="number" id="lfs-storage" value="0" min="0" max="10000" step="0.1">
+                            <input type="number" id="lfs-storage" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
                         <div class="input-group">
                             <label for="lfs-bandwidth">Bandwidth per Month (GB)</label>
-                            <input type="number" id="lfs-bandwidth" value="0" min="0" max="10000" step="0.1">
+                            <input type="number" id="lfs-bandwidth" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
                     </div>
                 </div>
@@ -166,15 +166,65 @@
                         </div>
                         <div class="input-group">
                             <label for="stored-codespaces">Stored Codespaces per Developer</label>
-                            <input type="number" id="stored-codespaces" value="3" min="0" max="100">
+                            <input type="number" id="stored-codespaces" placeholder="e.g. 3" min="0" max="100">
                         </div>
                         <div class="input-group">
                             <label for="avg-project-size">Average Project Size (GB)</label>
-                            <input type="number" id="avg-project-size" value="10" min="0" max="1000" step="0.1">
+                            <input type="number" id="avg-project-size" placeholder="e.g. 10" min="0" max="1000" step="0.1">
                         </div>
                         <div id="total-codespaces-usage" class="usage-summary hidden">
                             <strong>Total Monthly Storage:</strong>
                             <span id="total-storage-gb"></span> GB
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section collapsed" data-section="ghas">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            GitHub Advanced Security
+                        </h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-ghas">Use</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="section-checkbox" id="toggle-ghas">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="section-info">
+                        Secure code, from blueprint to execution. Code Security $30/committer, Secret Protection $19/committer
+                    </div>
+                    <div class="section-content">
+                        <p class="ghas-description">Customers pay for unique committers (contributors) that work on Private repositories for which a GitHub Advanced Security product is enabled. Every committer who has contributed to a repository in the last 90 days counts towards the total committer count. Please specify how many committers you expect to be working on your private repositories:</p>
+                        <div class="input-group">
+                            <label for="ghas-committers">Number of Committers</label>
+                            <input type="number" id="ghas-committers" placeholder="e.g. 10" min="0" max="10000">
+                        </div>
+                        <div class="ghas-products">
+                            <div class="toggle-option">
+                                <span class="toggle-label">Code Security - $30.00 USD/committer</span>
+                                <div class="toggle-wrapper">
+                                    <label class="toggle-label-text" for="ghas-code-security">Enable</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="ghas-code-security">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="toggle-option">
+                                <span class="toggle-label">Secret Protection - $19.00 USD/committer</span>
+                                <div class="toggle-wrapper">
+                                    <label class="toggle-label-text" for="ghas-secret-protection">Enable</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="ghas-secret-protection">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

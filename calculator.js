@@ -116,6 +116,10 @@ const PRICING = {
             32: 16   // 32 cores = 16x = $2.88/hr
         },
         storageRate: 0.07 // Per GB per month
+    },
+    ghas: {
+        codeSecurity: 30.00, // Per committer per month
+        secretProtection: 19.00 // Per committer per month
     }
 };
 
@@ -197,11 +201,11 @@ class GitHubPricingCalculator {
                 </div>
                 <div class="input-group">
                     <label for="runner-${runnerId}-jobs">Jobs per Day</label>
-                    <input type="number" id="runner-${runnerId}-jobs" data-runner-id="${runnerId}" value="10" min="0" max="1000">
+                    <input type="number" id="runner-${runnerId}-jobs" data-runner-id="${runnerId}" placeholder="e.g. 10" min="0" max="1000">
                 </div>
                 <div class="input-group">
                     <label for="runner-${runnerId}-duration">Average Job Duration (minutes)</label>
-                    <input type="number" id="runner-${runnerId}-duration" data-runner-id="${runnerId}" value="5" min="0" max="360">
+                    <input type="number" id="runner-${runnerId}-duration" data-runner-id="${runnerId}" placeholder="e.g. 5" min="0" max="360">
                 </div>
             </div>
         `;
@@ -289,11 +293,11 @@ class GitHubPricingCalculator {
                 </div>
                 <div class="input-group">
                     <label for="codespace-${codespaceId}-developers">Number of Developers</label>
-                    <input type="number" id="codespace-${codespaceId}-developers" data-codespace-id="${codespaceId}" value="1" min="0" max="1000">
+                    <input type="number" id="codespace-${codespaceId}-developers" data-codespace-id="${codespaceId}" placeholder="e.g. 1" min="0" max="1000">
                 </div>
                 <div class="input-group">
                     <label for="codespace-${codespaceId}-hours">Hours per Week per Developer</label>
-                    <input type="number" id="codespace-${codespaceId}-hours" data-codespace-id="${codespaceId}" value="20" min="0" max="168">
+                    <input type="number" id="codespace-${codespaceId}-hours" data-codespace-id="${codespaceId}" placeholder="e.g. 20" min="0" max="168">
                 </div>
             </div>
         `;
@@ -351,6 +355,7 @@ class GitHubPricingCalculator {
         const packagesEnabled = document.getElementById('toggle-packages').checked;
         const lfsEnabled = document.getElementById('toggle-lfs').checked;
         const codespacesEnabled = document.getElementById('toggle-codespaces').checked;
+        const ghasEnabled = document.getElementById('toggle-ghas').checked;
 
         // Get runner configs only if Actions is enabled
         const runnerConfigs = actionsEnabled ? this.runners.map(runnerId => {
@@ -388,7 +393,10 @@ class GitHubPricingCalculator {
             lfsBandwidth: lfsEnabled ? (parseFloat(document.getElementById('lfs-bandwidth').value) || 0) : 0,
             codespaces: codespaceConfigs,
             storedCodespaces: codespacesEnabled ? (parseFloat(document.getElementById('stored-codespaces').value) || 0) : 0,
-            avgProjectSize: codespacesEnabled ? (parseFloat(document.getElementById('avg-project-size').value) || 0) : 0
+            avgProjectSize: codespacesEnabled ? (parseFloat(document.getElementById('avg-project-size').value) || 0) : 0,
+            ghasCommitters: ghasEnabled ? (parseInt(document.getElementById('ghas-committers').value) || 0) : 0,
+            ghasCodeSecurity: ghasEnabled ? document.getElementById('ghas-code-security').checked : false,
+            ghasSecretProtection: ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false
         };
     }
 
@@ -433,10 +441,12 @@ class GitHubPricingCalculator {
             packagesCost: 0,
             lfsCost: 0,
             codespacesCost: 0,
+            ghasCost: 0,
             actionsDetails: {},
             packagesDetails: {},
             lfsDetails: {},
             codespacesDetails: {},
+            ghasDetails: {},
             canSupport: true,
             reasons: []
         };
@@ -585,13 +595,36 @@ class GitHubPricingCalculator {
             storageCost: storageCost
         };
 
+        // GitHub Advanced Security calculation
+        let ghasCodeSecurityCost = 0;
+        let ghasSecretProtectionCost = 0;
+
+        if (usage.ghasCommitters > 0) {
+            if (usage.ghasCodeSecurity) {
+                ghasCodeSecurityCost = usage.ghasCommitters * PRICING.ghas.codeSecurity;
+            }
+            if (usage.ghasSecretProtection) {
+                ghasSecretProtectionCost = usage.ghasCommitters * PRICING.ghas.secretProtection;
+            }
+        }
+
+        breakdown.ghasCost = ghasCodeSecurityCost + ghasSecretProtectionCost;
+        breakdown.ghasDetails = {
+            committers: usage.ghasCommitters,
+            codeSecurity: usage.ghasCodeSecurity,
+            secretProtection: usage.ghasSecretProtection,
+            codeSecurityCost: ghasCodeSecurityCost,
+            secretProtectionCost: ghasSecretProtectionCost
+        };
+
         // Total cost
         breakdown.totalCost =
             breakdown.baseCost +
             breakdown.actionsCost +
             breakdown.packagesCost +
             breakdown.lfsCost +
-            breakdown.codespacesCost;
+            breakdown.codespacesCost +
+            breakdown.ghasCost;
 
         return breakdown;
     }
@@ -811,6 +844,27 @@ class GitHubPricingCalculator {
                         <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
                             ${details.storageOverage > 0 ? '+$' + details.storageCost.toFixed(2) : details.storageIncluded > 0 ? 'Included' : '$' + details.storageCost.toFixed(2)}
                         </span>
+                    </div>
+                `;
+            }
+        }
+
+        // GitHub Advanced Security
+        if (breakdown.ghasDetails.committers > 0) {
+            const details = breakdown.ghasDetails;
+            if (details.codeSecurity) {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">GHAS Code Security (${details.committers} committers)</span>
+                        <span class="cost-value overage">$${details.codeSecurityCost.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            if (details.secretProtection) {
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">GHAS Secret Protection (${details.committers} committers)</span>
+                        <span class="cost-value overage">$${details.secretProtectionCost.toFixed(2)}</span>
                     </div>
                 `;
             }
