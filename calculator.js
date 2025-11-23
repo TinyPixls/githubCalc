@@ -316,7 +316,15 @@ class GitHubPricingCalculator {
     }
 
     getUsageInputs() {
-        const runnerConfigs = this.runners.map(runnerId => {
+        // Check which sections are enabled
+        const teamSizeEnabled = document.getElementById('toggle-team-size').checked;
+        const actionsEnabled = document.getElementById('toggle-actions').checked;
+        const packagesEnabled = document.getElementById('toggle-packages').checked;
+        const lfsEnabled = document.getElementById('toggle-lfs').checked;
+        const codespacesEnabled = document.getElementById('toggle-codespaces').checked;
+
+        // Get runner configs only if Actions is enabled
+        const runnerConfigs = actionsEnabled ? this.runners.map(runnerId => {
             const typeSelect = document.getElementById(`runner-${runnerId}-type`);
             const jobsInput = document.getElementById(`runner-${runnerId}-jobs`);
             const durationInput = document.getElementById(`runner-${runnerId}-duration`);
@@ -326,9 +334,10 @@ class GitHubPricingCalculator {
                 jobsPerDay: jobsInput ? (parseInt(jobsInput.value) || 0) : 0,
                 duration: durationInput ? (parseInt(durationInput.value) || 0) : 0
             };
-        });
+        }) : [];
 
-        const codespaceConfigs = this.codespaces.map(codespaceId => {
+        // Get codespace configs only if Codespaces is enabled
+        const codespaceConfigs = codespacesEnabled ? this.codespaces.map(codespaceId => {
             const coresSelect = document.getElementById(`codespace-${codespaceId}-cores`);
             const developersInput = document.getElementById(`codespace-${codespaceId}-developers`);
             const hoursInput = document.getElementById(`codespace-${codespaceId}-hours`);
@@ -338,19 +347,19 @@ class GitHubPricingCalculator {
                 developers: developersInput ? (parseInt(developersInput.value) || 0) : 0,
                 hoursPerWeek: hoursInput ? (parseFloat(hoursInput.value) || 0) : 0
             };
-        });
+        }) : [];
 
         return {
-            users: parseInt(document.getElementById('users').value) || 1,
+            users: teamSizeEnabled ? (parseInt(document.getElementById('users').value) || 1) : 1,
             runners: runnerConfigs,
-            publicRepos: document.getElementById('public-repos').checked,
-            packageStorage: parseFloat(document.getElementById('package-storage').value) || 0,
-            packageTransfer: parseFloat(document.getElementById('package-transfer').value) || 0,
-            lfsStorage: parseFloat(document.getElementById('lfs-storage').value) || 0,
-            lfsBandwidth: parseFloat(document.getElementById('lfs-bandwidth').value) || 0,
+            publicRepos: actionsEnabled ? document.getElementById('public-repos').checked : false,
+            packageStorage: packagesEnabled ? (parseFloat(document.getElementById('package-storage').value) || 0) : 0,
+            packageTransfer: packagesEnabled ? (parseFloat(document.getElementById('package-transfer').value) || 0) : 0,
+            lfsStorage: lfsEnabled ? (parseFloat(document.getElementById('lfs-storage').value) || 0) : 0,
+            lfsBandwidth: lfsEnabled ? (parseFloat(document.getElementById('lfs-bandwidth').value) || 0) : 0,
             codespaces: codespaceConfigs,
-            storedCodespaces: parseFloat(document.getElementById('stored-codespaces').value) || 0,
-            avgProjectSize: parseFloat(document.getElementById('avg-project-size').value) || 0
+            storedCodespaces: codespacesEnabled ? (parseFloat(document.getElementById('stored-codespaces').value) || 0) : 0,
+            avgProjectSize: codespacesEnabled ? (parseFloat(document.getElementById('avg-project-size').value) || 0) : 0
         };
     }
 
