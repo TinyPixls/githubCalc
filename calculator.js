@@ -279,6 +279,9 @@ class GitHubPricingCalculator {
         jobsInput.addEventListener('input', updateSummary);
         durationInput.addEventListener('input', updateSummary);
 
+        // Initialize summary
+        this.updateRunnerSummary(runnerId);
+
         this.calculate();
     }
 
@@ -403,6 +406,9 @@ class GitHubPricingCalculator {
         coresSelect.addEventListener('change', updateSummary);
         developersInput.addEventListener('input', updateSummary);
         hoursInput.addEventListener('input', updateSummary);
+
+        // Initialize summary
+        this.updateCodespaceSummary(codespaceId);
 
         this.calculate();
     }
