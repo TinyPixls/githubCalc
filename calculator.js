@@ -142,11 +142,15 @@ class GitHubPricingCalculator {
         const addCodespaceBtn = document.getElementById('add-codespace-btn');
         addCodespaceBtn.addEventListener('click', () => this.addCodespace());
 
-        // Section collapse/expand
-        document.querySelectorAll('.section h3').forEach(header => {
-            header.addEventListener('click', (e) => {
-                const section = header.closest('.section');
-                section.classList.toggle('collapsed');
+        // Section collapse/expand with checkboxes
+        document.querySelectorAll('.section-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const section = checkbox.closest('.section');
+                if (checkbox.checked) {
+                    section.classList.remove('collapsed');
+                } else {
+                    section.classList.add('collapsed');
+                }
             });
         });
 
@@ -487,8 +491,8 @@ class GitHubPricingCalculator {
         // Storage calculation
         const totalStorage = usage.storedCodespaces * usage.avgProjectSize * usage.users;
         const includedStorage = plan.codespaces.storage;
-        const storageOverage = Math.max(0, totalStorage - includedStorage);
-        const storageCost = storageOverage * PRICING.codespaces.storageRate;
+        const codespacesStorageOverage = Math.max(0, totalStorage - includedStorage);
+        const storageCost = codespacesStorageOverage * PRICING.codespaces.storageRate;
 
         breakdown.codespacesCost = computeCost + storageCost;
 
@@ -498,7 +502,7 @@ class GitHubPricingCalculator {
             hoursOverage: computeOverage,
             storageIncluded: includedStorage,
             storageUsed: totalStorage,
-            storageOverage: storageOverage,
+            storageOverage: codespacesStorageOverage,
             machineBreakdown: machineBreakdown,
             computeCost: computeCost,
             storageCost: storageCost

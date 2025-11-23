@@ -19,7 +19,13 @@
                 <h2>Your Expected Usage</h2>
 
                 <div class="section" data-section="team-size">
-                    <h3><span class="section-toggle">▼</span> Team Size</h3>
+                    <div class="section-header-wrapper">
+                        <h3>Team Size</h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-team-size">Use</label>
+                            <input type="checkbox" class="section-checkbox" id="toggle-team-size" checked>
+                        </div>
+                    </div>
                     <div class="section-content">
                         <div class="input-group">
                             <label for="users">Number of Users</label>
@@ -29,9 +35,15 @@
                 </div>
 
                 <div class="section" data-section="actions">
-                    <div class="section-header">
-                        <h3><span class="section-toggle">▼</span> GitHub Actions</h3>
-                        <button type="button" id="add-runner-btn" class="btn-secondary">+ Add Runner</button>
+                    <div class="section-header-wrapper">
+                        <div class="section-header">
+                            <h3>GitHub Actions</h3>
+                            <button type="button" id="add-runner-btn" class="btn-secondary">+ Add Runner</button>
+                        </div>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-actions">Use</label>
+                            <input type="checkbox" class="section-checkbox" id="toggle-actions" checked>
+                        </div>
                     </div>
                     <div class="section-content">
                         <div class="input-group">
@@ -52,7 +64,13 @@
                 </div>
 
                 <div class="section collapsed" data-section="packages">
-                    <h3><span class="section-toggle">▼</span> GitHub Packages</h3>
+                    <div class="section-header-wrapper">
+                        <h3>GitHub Packages</h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-packages">Use</label>
+                            <input type="checkbox" class="section-checkbox" id="toggle-packages">
+                        </div>
+                    </div>
                     <div class="section-content">
                         <div class="input-group">
                             <label for="package-storage">Storage Needed (GB)</label>
@@ -66,7 +84,13 @@
                 </div>
 
                 <div class="section collapsed" data-section="lfs">
-                    <h3><span class="section-toggle">▼</span> Git LFS</h3>
+                    <div class="section-header-wrapper">
+                        <h3>Git LFS</h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-lfs">Use</label>
+                            <input type="checkbox" class="section-checkbox" id="toggle-lfs">
+                        </div>
+                    </div>
                     <div class="section-content">
                         <div class="input-group">
                             <label for="lfs-storage">Storage Needed (GB)</label>
@@ -80,9 +104,15 @@
                 </div>
 
                 <div class="section collapsed" data-section="codespaces">
-                    <div class="section-header">
-                        <h3><span class="section-toggle">▼</span> GitHub Codespaces</h3>
-                        <button type="button" id="add-codespace-btn" class="btn-secondary">+ Add Machine</button>
+                    <div class="section-header-wrapper">
+                        <div class="section-header">
+                            <h3>GitHub Codespaces</h3>
+                            <button type="button" id="add-codespace-btn" class="btn-secondary">+ Add Machine</button>
+                        </div>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-codespaces">Use</label>
+                            <input type="checkbox" class="section-checkbox" id="toggle-codespaces">
+                        </div>
                     </div>
                     <div class="section-content">
                         <div id="codespaces-container">
