@@ -198,6 +198,71 @@ class GitHubPricingCalculator {
         // Initialize Copilot plan availability and validation
         this.updateCopilotPlanAvailability();
         this.validateFields();
+
+        // Section content collapse/expand functionality
+        document.querySelectorAll('.collapse-chevron').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const section = e.target.closest('.section');
+                const summary = section.querySelector('.section-summary');
+                section.classList.toggle('content-collapsed');
+
+                // Show/hide summary
+                if (section.classList.contains('content-collapsed')) {
+                    summary.style.display = 'block';
+                    this.updateSectionSummary(section);
+                } else {
+                    summary.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    updateSectionSummary(section) {
+        const sectionType = section.dataset.section;
+        const summaryElement = section.querySelector('.section-summary span');
+
+        if (!summaryElement) return;
+
+        // Check if section is enabled
+        const checkbox = section.querySelector('.section-checkbox');
+        if (!checkbox || !checkbox.checked) {
+            summaryElement.textContent = 'Not configured';
+            return;
+        }
+
+        // Generate summary based on section type
+        switch (sectionType) {
+            case 'copilot':
+                this.updateCopilotSummary(summaryElement);
+                break;
+            // Add other sections as needed
+            default:
+                summaryElement.textContent = 'Not configured';
+        }
+    }
+
+    updateCopilotSummary(element) {
+        const copilotUsers = parseInt(document.getElementById('copilot-users').value) || 0;
+        const teamSize = parseInt(document.getElementById('users').value) || 1;
+        const effectiveUsers = copilotUsers > 0 ? copilotUsers : teamSize;
+        const selectedPlan = document.querySelector('input[name="copilot-plan"]:checked');
+
+        if (!selectedPlan) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        const planNames = {
+            'individual-free': 'Individual Free',
+            'individual-pro': 'Individual Pro',
+            'individual-pro-plus': 'Individual Pro+',
+            'org-business': 'Business',
+            'org-enterprise': 'Enterprise'
+        };
+
+        const planName = planNames[selectedPlan.value] || 'Unknown';
+        const userText = effectiveUsers > 1 ? `${effectiveUsers} users` : '1 user';
+        element.textContent = `${planName} plan for ${userText}`;
     }
 
     validateFields() {

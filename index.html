@@ -45,6 +45,20 @@
                         AI-powered code completion and chat assistance. Plans start at Free for individuals, $19/month for organizations
                     </div>
                     <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="copilot-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
                         <!-- Number of Copilot Users -->
                         <div class="input-group" style="margin-bottom: 1.5rem;">
                             <label for="copilot-users">Number of Copilot Users (leave empty to use team size)</label>
@@ -118,6 +132,7 @@
                                 <input type="number" id="copilot-overage-requests" placeholder="0" min="0" max="1000000">
                             </div>
                         </div>
+                        </div><!-- end section-main-content -->
                     </div>
                 </div>
 

@@ -121,7 +121,7 @@ input.team-size-input {
     border-radius: 0 !important;
     outline: none;
     font-size: 2.5rem !important;
-    font-weight: 600 !important;
+    font-weight: 300 !important;
     color: var(--color-text);
     padding: 0 0 0.25rem 0 !important;
     width: 120px !important;
@@ -172,6 +172,75 @@ input.team-size-input:hover {
     max-height: 0;
     opacity: 0;
     margin-top: 0;
+}
+
+/* Section Collapse Toggle */
+.section-collapse-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.section.content-collapsed .section-collapse-toggle {
+    margin-bottom: 0.75rem;
+}
+
+.collapse-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+}
+
+.collapse-chevron {
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.collapse-chevron:hover {
+    color: var(--color-accent);
+    transform: scale(1.1);
+}
+
+.section.content-collapsed .collapse-chevron {
+    transform: rotate(180deg);
+}
+
+.section.content-collapsed .collapse-chevron:hover {
+    transform: rotate(180deg) scale(1.1);
+}
+
+/* Section Summary */
+.section-summary {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    font-style: italic;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.section-main-content {
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    max-height: 5000px;
+    opacity: 1;
+    overflow: hidden;
+}
+
+.section.content-collapsed .section-main-content {
+    max-height: 0;
+    opacity: 0;
 }
 
 .section-header-wrapper {
