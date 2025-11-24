@@ -1224,6 +1224,23 @@ select::placeholder {
     font-weight: 500;
 }
 
+.validation-warning {
+    display: block;
+    color: #f59e0b;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+input.has-warning {
+    border-color: #f59e0b;
+}
+
+input.has-warning:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
 .input-group input.has-error {
     border-color: var(--color-danger);
     background-color: rgba(207, 34, 46, 0.05);

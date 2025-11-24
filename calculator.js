@@ -519,8 +519,17 @@ class GitHubPricingCalculator {
         const committers = parseInt(document.getElementById('ghas-committers').value) || 0;
         const codeSecurity = document.getElementById('ghas-code-security').checked;
         const secretProtection = document.getElementById('ghas-secret-protection').checked;
+        const teamSize = parseInt(document.getElementById('users').value) || 1;
 
-        if (committers === 0 || (!codeSecurity && !secretProtection)) {
+        if (!codeSecurity && !secretProtection) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        // Use team size as fallback if committers not specified
+        const effectiveCommitters = (committers === 0 && (codeSecurity || secretProtection)) ? teamSize : committers;
+
+        if (effectiveCommitters === 0) {
             element.textContent = 'Not configured';
             return;
         }
@@ -529,8 +538,9 @@ class GitHubPricingCalculator {
         if (codeSecurity) products.push('Code Security');
         if (secretProtection) products.push('Secret Protection');
 
-        const committerText = committers === 1 ? 'committer' : 'committers';
-        element.textContent = `${committers} ${committerText} • ${products.join(' + ')}`;
+        const committerText = effectiveCommitters === 1 ? 'committer' : 'committers';
+        const fallbackNote = committers === 0 ? ' (using team size)' : '';
+        element.textContent = `${effectiveCommitters} ${committerText}${fallbackNote} • ${products.join(' + ')}`;
     }
 
     updateOtherFeaturesSummary(element) {
@@ -558,6 +568,19 @@ class GitHubPricingCalculator {
 
     validateFields() {
         const teamSize = parseInt(document.getElementById('users').value) || 0;
+        const teamSizeInput = document.getElementById('users');
+
+        // Check if any sections are enabled but team size is not set
+        const anySectionEnabled = this.hasAnyFeaturesEnabled();
+        const teamSizeWarning = document.getElementById('team-size-warning');
+
+        if (anySectionEnabled && teamSize === 0 && teamSizeWarning) {
+            teamSizeWarning.style.display = 'block';
+            teamSizeInput.classList.add('has-warning');
+        } else if (teamSizeWarning) {
+            teamSizeWarning.style.display = 'none';
+            teamSizeInput.classList.remove('has-warning');
+        }
 
         // Validate Copilot users
         const copilotUsersInput = document.getElementById('copilot-users');
@@ -949,8 +972,18 @@ class GitHubPricingCalculator {
         const copilotPlanRadio = copilotEnabled ? document.querySelector('input[name="copilot-plan"]:checked') : null;
         const copilotPlan = copilotPlanRadio ? copilotPlanRadio.value : null;
 
+        const users = parseInt(document.getElementById('users').value) || 1;
+        const ghasCommittersInput = ghasEnabled ? (parseInt(document.getElementById('ghas-committers').value) || 0) : 0;
+        const ghasCodeSecurityChecked = ghasEnabled ? document.getElementById('ghas-code-security').checked : false;
+        const ghasSecretProtectionChecked = ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false;
+
+        // Use team size as fallback for GHAS committers if not specified but GHAS is enabled
+        const effectiveGhasCommitters = (ghasEnabled && (ghasCodeSecurityChecked || ghasSecretProtectionChecked) && ghasCommittersInput === 0)
+            ? users
+            : ghasCommittersInput;
+
         return {
-            users: parseInt(document.getElementById('users').value) || 1,
+            users: users,
             copilotPlan: copilotPlan,
             copilotUsers: copilotEnabled ? (parseInt(document.getElementById('copilot-users').value) || 0) : 0,
             copilotOverageRequests: copilotEnabled ? (parseInt(document.getElementById('copilot-overage-requests').value) || 0) : 0,
@@ -963,9 +996,10 @@ class GitHubPricingCalculator {
             codespaces: codespaceConfigs,
             storedCodespaces: codespacesEnabled ? (parseFloat(document.getElementById('stored-codespaces').value) || 0) : 0,
             avgProjectSize: codespacesEnabled ? (parseFloat(document.getElementById('avg-project-size').value) || 0) : 0,
-            ghasCommitters: ghasEnabled ? (parseInt(document.getElementById('ghas-committers').value) || 0) : 0,
-            ghasCodeSecurity: ghasEnabled ? document.getElementById('ghas-code-security').checked : false,
-            ghasSecretProtection: ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false,
+            ghasCommitters: effectiveGhasCommitters,
+            ghasCommittersSpecified: ghasCommittersInput > 0,
+            ghasCodeSecurity: ghasCodeSecurityChecked,
+            ghasSecretProtection: ghasSecretProtectionChecked,
             selectedFeatures: otherFeaturesEnabled ? this.getSelectedFeatures() : []
         };
     }
@@ -1573,10 +1607,14 @@ class GitHubPricingCalculator {
         // GitHub Advanced Security
         if (breakdown.ghasDetails.committers > 0) {
             const details = breakdown.ghasDetails;
+            const committerLabel = this.usage.ghasCommittersSpecified
+                ? `${details.committers} committers`
+                : `${details.committers} committers (using team size)`;
+
             if (details.codeSecurity) {
                 costBreakdownHtml += `
                     <div class="cost-item">
-                        <span class="cost-label">GHAS Code Security (${details.committers} committers)</span>
+                        <span class="cost-label">GHAS Code Security (${committerLabel})</span>
                         <span class="cost-value overage">$${details.codeSecurityCost.toFixed(2)}</span>
                     </div>
                 `;
@@ -1584,7 +1622,7 @@ class GitHubPricingCalculator {
             if (details.secretProtection) {
                 costBreakdownHtml += `
                     <div class="cost-item">
-                        <span class="cost-label">GHAS Secret Protection (${details.committers} committers)</span>
+                        <span class="cost-label">GHAS Secret Protection (${committerLabel})</span>
                         <span class="cost-value overage">$${details.secretProtectionCost.toFixed(2)}</span>
                     </div>
                 `;
