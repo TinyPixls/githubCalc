@@ -1028,10 +1028,7 @@ class GitHubPricingCalculator {
                 if (availability === false) {
                     unsupportedFeatures.push(feature.name);
                 }
-                // Feature only available for public repos, but user is using private repos
-                else if (availability === 'public' && !usage.publicRepos) {
-                    unsupportedFeatures.push(`${feature.name} (requires public repos)`);
-                }
+                // Note: 'public' features are treated as available with a caveat, not as unavailable
             });
 
             if (unsupportedFeatures.length > 0) {
@@ -1488,15 +1485,15 @@ class GitHubPricingCalculator {
             const details = breakdown.lfsDetails;
             costBreakdownHtml += `
                 <div class="cost-item">
-                    <span class="cost-label">LFS Storage (${details.storageUsed} GiB / ${details.storageIncluded} GiB free)</span>
+                    <span class="cost-label">LFS Storage (${details.storageUsed} GiB / ${details.storageIncluded} GiB included)</span>
                     <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
-                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included in free tier'}
+                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included'}
                     </span>
                 </div>
                 <div class="cost-item">
-                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GiB / ${details.bandwidthIncluded} GiB free)</span>
+                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GiB / ${details.bandwidthIncluded} GiB included)</span>
                     <span class="cost-value ${details.bandwidthOverage > 0 ? 'overage' : 'included'}">
-                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included in free tier'}
+                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included'}
                     </span>
                 </div>
             `;
