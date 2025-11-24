@@ -132,6 +132,12 @@ body {
     gap: 1rem;
 }
 
+.unavailable-status {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
 .reset-link {
     color: var(--color-accent);
     text-decoration: none;
@@ -1436,7 +1442,7 @@ input.has-warning:focus {
 
     .calculator-grid {
         grid-template-columns: 500px 1fr;
-        gap: 0;
+        gap: 2rem;
     }
 
     .usage-panel {

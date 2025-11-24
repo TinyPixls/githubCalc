@@ -436,9 +436,11 @@ class GitHubPricingCalculator {
         const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"][data-plan]');
         const hideUnavailableCheckbox = document.getElementById('hide-unavailable-plans');
         const summary = document.getElementById('visibility-summary');
+        const unavailableStatus = document.getElementById('unavailable-status');
 
         let hiddenCount = 0;
         const hiddenPlans = [];
+        const unavailablePlans = [];
 
         checkboxes.forEach(checkbox => {
             const plan = checkbox.dataset.plan;
@@ -446,10 +448,12 @@ class GitHubPricingCalculator {
 
             if (planCard) {
                 let shouldHide = !checkbox.checked;
+                let isUnavailable = false;
 
                 // Also hide if "hide unavailable" is checked and plan has "not-available" class
                 if (hideUnavailableCheckbox && hideUnavailableCheckbox.checked && planCard.classList.contains('not-available')) {
                     shouldHide = true;
+                    isUnavailable = true;
                 }
 
                 if (shouldHide) {
@@ -457,6 +461,8 @@ class GitHubPricingCalculator {
                     if (!checkbox.checked) {
                         hiddenCount++;
                         hiddenPlans.push(checkbox.nextElementSibling.textContent);
+                    } else if (isUnavailable) {
+                        unavailablePlans.push(checkbox.nextElementSibling.textContent);
                     }
                 } else {
                     planCard.style.display = '';
@@ -471,6 +477,18 @@ class GitHubPricingCalculator {
             summary.textContent = `${hiddenPlans[0]} hidden`;
         } else {
             summary.textContent = `${hiddenCount} hidden`;
+        }
+
+        // Update unavailable status text
+        if (unavailablePlans.length === 0) {
+            unavailableStatus.textContent = '';
+        } else if (unavailablePlans.length === 1) {
+            unavailableStatus.textContent = `${unavailablePlans[0]} plan hidden (Unavailable)`;
+        } else if (unavailablePlans.length === 2) {
+            unavailableStatus.textContent = `${unavailablePlans[0]} and ${unavailablePlans[1]} plans hidden (Unavailable)`;
+        } else {
+            const lastPlan = unavailablePlans.pop();
+            unavailableStatus.textContent = `${unavailablePlans.join(', ')}, and ${lastPlan} plans hidden (Unavailable)`;
         }
     }
 
