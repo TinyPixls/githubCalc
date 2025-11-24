@@ -196,27 +196,34 @@ input.team-size-input:hover {
 }
 
 .collapse-chevron {
-    background: transparent;
+    background: rgba(9, 105, 218, 0.1);
     border: none;
-    color: var(--color-text-secondary);
+    color: var(--color-accent);
     font-size: 0.875rem;
     cursor: pointer;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
     transition: all 0.2s ease;
     user-select: none;
-}
-
-.collapse-chevron:hover {
-    color: var(--color-accent);
-    transform: scale(1.1);
-}
-
-.section.content-collapsed .collapse-chevron {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transform: rotate(180deg);
 }
 
-.section.content-collapsed .collapse-chevron:hover {
+.collapse-chevron:hover {
+    background: rgba(9, 105, 218, 0.2);
     transform: rotate(180deg) scale(1.1);
+}
+
+.section.content-collapsed .collapse-chevron {
+    transform: rotate(0deg);
+}
+
+.section.content-collapsed .collapse-chevron:hover {
+    transform: rotate(0deg) scale(1.1);
 }
 
 /* Section Summary */
