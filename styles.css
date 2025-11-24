@@ -638,10 +638,7 @@ input.team-size-input:hover {
     font-weight: bold;
 }
 
-/* Info Section Styling */
-.section.info-section {
-    background: rgba(26, 127, 55, 0.03);
-}
+/* Info Section Styling - Removed, common features now uses standard styling */
 
 .toggle-switch {
     position: relative;
