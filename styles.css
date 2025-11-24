@@ -1339,3 +1339,38 @@ input.has-warning:focus {
         font-size: 1.5rem;
     }
 }
+
+@media (min-width: 1800px) {
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+
+    .calculator-grid {
+        grid-template-columns: 500px 1fr;
+        gap: 0;
+    }
+
+    .usage-panel {
+        position: sticky;
+        top: 0;
+        height: calc(100vh - 100px);
+    }
+
+    .comparison-panel {
+        height: calc(100vh - 100px);
+    }
+
+    .plans-grid {
+        display: flex;
+        flex-direction: row;
+        gap: 1.5rem;
+        overflow-x: auto;
+        padding-bottom: 1rem;
+    }
+
+    .plan-card {
+        flex: 0 0 400px;
+        min-width: 400px;
+    }
+}
