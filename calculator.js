@@ -160,6 +160,12 @@ class GitHubPricingCalculator {
                 const section = checkbox.closest('.section');
                 if (checkbox.checked) {
                     section.classList.remove('collapsed');
+                    // Reset accordion state - expand content when section is enabled
+                    section.classList.remove('content-collapsed');
+                    const summary = section.querySelector('.section-summary');
+                    if (summary) {
+                        summary.style.display = 'none';
+                    }
                 } else {
                     section.classList.add('collapsed');
                 }
