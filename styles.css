@@ -58,7 +58,9 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--shadow-md);
     z-index: 1000;
     padding: 0.75rem 1rem;
@@ -67,20 +69,28 @@ body {
 .header-content {
     max-width: 1200px;
     margin: 0 auto;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
 }
 
 .app-header h1 {
+    font-family: "Inter", "Roboto", "Helvetica Neue", sans-serif;
     font-size: 1.25rem;
     color: var(--color-text);
-    margin-bottom: 0.25rem;
-    font-weight: 600;
+    margin: 0;
+    font-weight: 400;
 }
 
 .app-header .subtitle {
+    font-family: "Inter", "Roboto", "Helvetica Neue", sans-serif;
     color: var(--color-text-secondary);
     font-size: 0.85rem;
     margin: 0;
+    font-weight: 300;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .calculator-grid {
