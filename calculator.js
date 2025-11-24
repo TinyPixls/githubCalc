@@ -131,6 +131,58 @@ const PRICING = {
     }
 };
 
+// Feature availability by plan
+const FEATURE_AVAILABILITY = {
+    'feature-repo-rules': { free: 'public', team: true, enterprise: true, name: 'Repository rules' },
+    'feature-code-owners': { free: 'public', team: true, enterprise: true, name: 'Code owners' },
+    'feature-draft-pr': { free: 'public', team: true, enterprise: true, name: 'Draft pull requests' },
+    'feature-multiple-pr-assignees': { free: 'public', team: true, enterprise: true, name: 'Multiple PR assignees' },
+    'feature-repository-insights': { free: 'public', team: true, enterprise: true, name: 'Repository insights' },
+    'feature-scheduled-reminders': { free: 'public', team: true, enterprise: true, name: 'Scheduled reminders' },
+    'feature-auto-code-review': { free: 'public', team: true, enterprise: true, name: 'Automatic code review assignment' },
+    'feature-environment-protection': { free: 'public', team: 'public', enterprise: true, name: 'Environment protection rules' },
+    'feature-environment-deployment': { free: false, team: true, enterprise: true, name: 'Environment deployment branches' },
+    'feature-multiple-reviewers': { free: false, team: true, enterprise: true, name: 'Multiple reviewers' },
+    'feature-required-reviewers': { free: false, team: true, enterprise: true, name: 'Required reviewers' },
+    'feature-pages-wikis': { free: 'public', team: true, enterprise: true, name: 'Pages and wikis' },
+    'feature-multiple-issue-assignees': { free: 'public', team: true, enterprise: true, name: 'Multiple issue assignees' },
+    'feature-push-protection': { free: 'public', team: 'addon', enterprise: 'addon', name: 'Push protection' },
+    'feature-secret-scanning': { free: 'public', team: 'addon', enterprise: 'addon', name: 'Secret scanning' },
+    'feature-provider-patterns': { free: 'public', team: 'addon', enterprise: 'addon', name: 'Provider patterns' },
+    'feature-validity-checks': { free: false, team: 'addon', enterprise: 'addon', name: 'Validity checks' },
+    'feature-copilot-secret-scanning': { free: false, team: 'addon', enterprise: 'addon', name: 'Copilot secret scanning' },
+    'feature-generic-patterns': { free: false, team: 'addon', enterprise: 'addon', name: 'Generic patterns' },
+    'feature-custom-patterns': { free: false, team: 'addon', enterprise: 'addon', name: 'Custom patterns' },
+    'feature-push-protection-bypass': { free: false, team: 'addon', enterprise: 'addon', name: 'Push protection bypass controls' },
+    'feature-security-insights': { free: false, team: 'addon', enterprise: 'addon', name: 'Security insights' },
+    'feature-scan-history-api': { free: false, team: 'addon', enterprise: 'addon', name: 'Scan history API' },
+    'feature-copilot-autofix': { free: 'public', team: 'addon', enterprise: 'addon', name: 'Copilot Autofix' },
+    'feature-third-party-extensibility': { free: 'public', team: 'addon', enterprise: 'addon', name: 'Third party extensibility' },
+    'feature-contextual-vuln': { free: 'public', team: 'addon', enterprise: 'addon', name: 'Contextual vulnerability intelligence' },
+    'feature-codeql': { free: 'public', team: 'addon', enterprise: 'addon', name: 'CodeQL' },
+    'feature-security-campaigns': { free: false, team: 'addon', enterprise: 'addon', name: 'Security campaigns' },
+    'feature-dependabot-custom-rules': { free: false, team: 'addon', enterprise: 'addon', name: 'Dependabot custom auto-triage rules' },
+    'feature-artifact-attestations': { free: 'public', team: 'public', enterprise: true, name: 'Artifact attestations' },
+    'feature-required-2fa': { free: true, team: true, enterprise: true, name: 'Required 2FA' },
+    'feature-audit-log': { free: false, team: true, enterprise: true, name: 'Audit log' },
+    'feature-audit-log-api': { free: false, team: false, enterprise: true, name: 'Audit log API' },
+    'feature-github-connect': { free: false, team: false, enterprise: true, name: 'GitHub Connect' },
+    'feature-saml-sso': { free: false, team: false, enterprise: true, name: 'SAML SSO' },
+    'feature-ldap': { free: false, team: false, enterprise: 'server', name: 'LDAP' },
+    'feature-ip-allow-list': { free: false, team: false, enterprise: 'cloud', name: 'IP allow list' },
+    'feature-data-residency': { free: false, team: false, enterprise: true, name: 'Data residency' },
+    'feature-emu': { free: false, team: false, enterprise: true, name: 'Enterprise Managed Users' },
+    'feature-scim': { free: false, team: false, enterprise: true, name: 'User provisioning (SCIM)' },
+    'feature-enterprise-account': { free: false, team: false, enterprise: true, name: 'Enterprise Account' },
+    'feature-soc-reports': { free: false, team: false, enterprise: true, name: 'SOC1/SOC2 reports' },
+    'feature-fedramp': { free: false, team: false, enterprise: true, name: 'FedRAMP Tailored ATO' },
+    'feature-pre-receive-hooks': { free: false, team: false, enterprise: 'server', name: 'Pre-receive hooks' },
+    'feature-standard-support': { free: false, team: true, enterprise: true, name: 'Standard Support' },
+    'feature-premium-support': { free: false, team: false, enterprise: 'addon', name: 'Premium Support' },
+    'feature-invoice-billing': { free: false, team: false, enterprise: true, name: 'Invoice billing' },
+    'feature-self-hosted': { free: false, team: false, enterprise: 'server', name: 'Self-hosted deployment' }
+};
+
 class GitHubPricingCalculator {
     constructor() {
         this.usage = {};
@@ -244,6 +296,16 @@ class GitHubPricingCalculator {
                 }
             });
         });
+
+        // Add event listeners to feature checkboxes
+        for (const featureId in FEATURE_AVAILABILITY) {
+            const checkbox = document.getElementById(featureId);
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    this.calculate();
+                });
+            }
+        }
     }
 
     updateSectionSummary(section) {
@@ -278,6 +340,9 @@ class GitHubPricingCalculator {
                 break;
             case 'ghas':
                 this.updateGHASSummary(summaryElement);
+                break;
+            case 'other-features':
+                this.updateOtherFeaturesSummary(summaryElement);
                 break;
             default:
                 summaryElement.textContent = 'Not configured';
@@ -444,6 +509,29 @@ class GitHubPricingCalculator {
 
         const committerText = committers === 1 ? 'committer' : 'committers';
         element.textContent = `${committers} ${committerText} • ${products.join(' + ')}`;
+    }
+
+    updateOtherFeaturesSummary(element) {
+        const selectedFeatures = this.getSelectedFeatures();
+
+        if (selectedFeatures.length === 0) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        const featureText = selectedFeatures.length === 1 ? 'feature' : 'features';
+        element.textContent = `${selectedFeatures.length} ${featureText} selected`;
+    }
+
+    getSelectedFeatures() {
+        const selectedFeatures = [];
+        for (const featureId in FEATURE_AVAILABILITY) {
+            const checkbox = document.getElementById(featureId);
+            if (checkbox && checkbox.checked) {
+                selectedFeatures.push(featureId);
+            }
+        }
+        return selectedFeatures;
     }
 
     validateFields() {
@@ -807,6 +895,7 @@ class GitHubPricingCalculator {
         const lfsEnabled = document.getElementById('toggle-lfs').checked;
         const codespacesEnabled = document.getElementById('toggle-codespaces').checked;
         const ghasEnabled = document.getElementById('toggle-ghas').checked;
+        const otherFeaturesEnabled = document.getElementById('toggle-other-features').checked;
 
         // Get runner configs only if Actions is enabled
         const runnerConfigs = actionsEnabled ? this.runners.map(runnerId => {
@@ -854,7 +943,8 @@ class GitHubPricingCalculator {
             avgProjectSize: codespacesEnabled ? (parseFloat(document.getElementById('avg-project-size').value) || 0) : 0,
             ghasCommitters: ghasEnabled ? (parseInt(document.getElementById('ghas-committers').value) || 0) : 0,
             ghasCodeSecurity: ghasEnabled ? document.getElementById('ghas-code-security').checked : false,
-            ghasSecretProtection: ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false
+            ghasSecretProtection: ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false,
+            selectedFeatures: otherFeaturesEnabled ? this.getSelectedFeatures() : []
         };
     }
 
@@ -922,6 +1012,36 @@ class GitHubPricingCalculator {
         if ((planKey === 'free' || planKey === 'pro') && ghasEnabled) {
             breakdown.canSupport = false;
             breakdown.reasons.push('GitHub Advanced Security is only available in Team and Enterprise plans');
+        }
+
+        // Validate selected features against plan availability
+        if (usage.selectedFeatures && usage.selectedFeatures.length > 0) {
+            const unsupportedFeatures = [];
+
+            usage.selectedFeatures.forEach(featureId => {
+                const feature = FEATURE_AVAILABILITY[featureId];
+                if (!feature) return;
+
+                const availability = feature[planKey];
+
+                // Feature not available at all for this plan
+                if (availability === false) {
+                    unsupportedFeatures.push(feature.name);
+                }
+                // Feature only available for public repos, but user is using private repos
+                else if (availability === 'public' && !usage.publicRepos) {
+                    unsupportedFeatures.push(`${feature.name} (requires public repos)`);
+                }
+            });
+
+            if (unsupportedFeatures.length > 0) {
+                breakdown.canSupport = false;
+                const featureList = unsupportedFeatures.slice(0, 3).join(', ');
+                const remaining = unsupportedFeatures.length - 3;
+                breakdown.reasons.push(
+                    `Missing features: ${featureList}${remaining > 0 ? ` and ${remaining} more` : ''}`
+                );
+            }
         }
 
         // GitHub Copilot calculation
@@ -1431,6 +1551,50 @@ class GitHubPricingCalculator {
                     </div>
                 `;
             }
+        }
+
+        // Other Features
+        if (this.usage.selectedFeatures && this.usage.selectedFeatures.length > 0) {
+            this.usage.selectedFeatures.forEach(featureId => {
+                const feature = FEATURE_AVAILABILITY[featureId];
+                if (!feature) return;
+
+                const availability = feature[planKey];
+                let statusText = '';
+                let statusClass = 'included';
+
+                if (availability === false) {
+                    statusText = 'Not available';
+                    statusClass = 'exceeded';
+                } else if (availability === true) {
+                    statusText = 'Included';
+                    statusClass = 'included';
+                } else if (availability === 'public') {
+                    if (this.usage.publicRepos) {
+                        statusText = 'Included';
+                        statusClass = 'included';
+                    } else {
+                        statusText = 'Public repos only';
+                        statusClass = 'exceeded';
+                    }
+                } else if (availability === 'addon') {
+                    statusText = 'Add-on required';
+                    statusClass = 'overage';
+                } else if (availability === 'server') {
+                    statusText = 'Enterprise Server only';
+                    statusClass = 'overage';
+                } else if (availability === 'cloud') {
+                    statusText = 'Enterprise Cloud only';
+                    statusClass = 'overage';
+                }
+
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">${feature.name}</span>
+                        <span class="cost-value ${statusClass}">${statusText}</span>
+                    </div>
+                `;
+            });
         }
 
         let unavailableReason = '';
