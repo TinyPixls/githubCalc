@@ -126,6 +126,88 @@ body {
     font-weight: 300;
 }
 
+.plan-visibility-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reset-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.reset-link:hover {
+    text-decoration: underline;
+}
+
+.plan-visibility-dropdown {
+    position: relative;
+}
+
+.plan-visibility-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-panel);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.plan-visibility-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.plan-visibility-button.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.plan-visibility-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    padding: 0.5rem;
+    min-width: 150px;
+    z-index: 100;
+}
+
+.plan-visibility-menu.hidden {
+    display: none;
+}
+
+.plan-visibility-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+.plan-visibility-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.plan-visibility-item input[type="checkbox"] {
+    cursor: pointer;
+}
+
 .panel-content {
     flex: 1;
     overflow-y: auto;
@@ -1370,7 +1452,8 @@ input.has-warning:focus {
     }
 
     .plan-card {
-        flex: 0 0 400px;
+        flex: 1 1 400px;
         min-width: 400px;
+        max-width: 500px;
     }
 }

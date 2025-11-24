@@ -329,6 +329,119 @@ class GitHubPricingCalculator {
                 });
             }
         }
+
+        // Initialize plan visibility controls
+        this.initPlanVisibility();
+    }
+
+    initPlanVisibility() {
+        const toggleButton = document.getElementById('plan-visibility-toggle');
+        const menu = document.getElementById('plan-visibility-menu');
+        const resetLink = document.getElementById('reset-visibility');
+        const checkboxes = menu.querySelectorAll('input[type="checkbox"]');
+
+        // Load saved visibility state from localStorage
+        this.loadPlanVisibility();
+
+        // Toggle dropdown menu
+        toggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('hidden');
+            toggleButton.classList.toggle('open');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !toggleButton.contains(e.target)) {
+                menu.classList.add('hidden');
+                toggleButton.classList.remove('open');
+            }
+        });
+
+        // Handle checkbox changes
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                this.updatePlanVisibility();
+                this.savePlanVisibility();
+            });
+        });
+
+        // Handle reset
+        resetLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.resetPlanVisibility();
+        });
+
+        // Initial update
+        this.updatePlanVisibility();
+    }
+
+    loadPlanVisibility() {
+        const saved = localStorage.getItem('planVisibility');
+        if (saved) {
+            try {
+                const visibility = JSON.parse(saved);
+                const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    const plan = checkbox.dataset.plan;
+                    if (visibility[plan] !== undefined) {
+                        checkbox.checked = visibility[plan];
+                    }
+                });
+            } catch (e) {
+                console.error('Error loading plan visibility:', e);
+            }
+        }
+    }
+
+    savePlanVisibility() {
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+        const visibility = {};
+        checkboxes.forEach(checkbox => {
+            visibility[checkbox.dataset.plan] = checkbox.checked;
+        });
+        localStorage.setItem('planVisibility', JSON.stringify(visibility));
+    }
+
+    resetPlanVisibility() {
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+        });
+        localStorage.removeItem('planVisibility');
+        this.updatePlanVisibility();
+    }
+
+    updatePlanVisibility() {
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+        const summary = document.getElementById('visibility-summary');
+
+        let hiddenCount = 0;
+        const hiddenPlans = [];
+
+        checkboxes.forEach(checkbox => {
+            const plan = checkbox.dataset.plan;
+            const planCard = document.querySelector(`[data-plan="${plan}"]`);
+
+            if (planCard) {
+                if (checkbox.checked) {
+                    planCard.style.display = '';
+                } else {
+                    planCard.style.display = 'none';
+                    hiddenCount++;
+                    hiddenPlans.push(checkbox.nextElementSibling.textContent);
+                }
+            }
+        });
+
+        // Update summary text
+        if (hiddenCount === 0) {
+            summary.textContent = 'All plans';
+        } else if (hiddenCount === 1) {
+            summary.textContent = `${hiddenPlans[0]} hidden`;
+        } else {
+            summary.textContent = `${hiddenCount} hidden`;
+        }
     }
 
     updateSectionSummary(section) {
@@ -1430,6 +1543,9 @@ class GitHubPricingCalculator {
             const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey);
             plansGrid.appendChild(card);
         }
+
+        // Apply saved visibility state
+        this.updatePlanVisibility();
     }
 
     getPlanIcon(planKey) {
@@ -1445,6 +1561,7 @@ class GitHubPricingCalculator {
     createPlanCard(planKey, plan, breakdown, isBest) {
         const card = document.createElement('div');
         card.className = 'plan-card';
+        card.dataset.plan = planKey;
 
         if (isBest && breakdown.canSupport) {
             card.classList.add('recommended');

@@ -803,6 +803,33 @@
             <div class="panel comparison-panel">
                 <div class="panel-header">
                     <h2>Plan Comparison</h2>
+                    <div class="plan-visibility-controls">
+                        <a href="#" id="reset-visibility" class="reset-link">Reset</a>
+                        <div class="plan-visibility-dropdown">
+                            <button id="plan-visibility-toggle" class="plan-visibility-button">
+                                <span id="visibility-summary">All plans</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div id="plan-visibility-menu" class="plan-visibility-menu hidden">
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="free" checked>
+                                    <span>Free</span>
+                                </label>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="pro" checked>
+                                    <span>Pro</span>
+                                </label>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="team" checked>
+                                    <span>Team</span>
+                                </label>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="enterprise" checked>
+                                    <span>Enterprise</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-content">
 
