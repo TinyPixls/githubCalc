@@ -238,7 +238,18 @@ class GitHubPricingCalculator {
             case 'actions':
                 this.updateActionsSummary(summaryElement);
                 break;
-            // Add other sections as needed
+            case 'codespaces':
+                this.updateCodespacesSummary(summaryElement);
+                break;
+            case 'packages':
+                this.updatePackagesSummary(summaryElement);
+                break;
+            case 'lfs':
+                this.updateLFSSummary(summaryElement);
+                break;
+            case 'ghas':
+                this.updateGHASSummary(summaryElement);
+                break;
             default:
                 summaryElement.textContent = 'Not configured';
         }
@@ -308,6 +319,102 @@ class GitHubPricingCalculator {
             const jobText = totalJobs === 1 ? 'job' : 'jobs';
             element.textContent = `${configuredCount} ${runnerText}, ${totalJobs} ${jobText}/day`;
         }
+    }
+
+    updateCodespacesSummary(element) {
+        const machineCount = this.codespaces.length;
+        const storedCodespaces = parseInt(document.getElementById('stored-codespaces').value) || 0;
+        const avgProjectSize = parseFloat(document.getElementById('avg-project-size').value) || 0;
+
+        if (machineCount === 0 && storedCodespaces === 0 && avgProjectSize === 0) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        // Count configured machines
+        let configuredCount = 0;
+        let totalDevelopers = 0;
+
+        this.codespaces.forEach(codespaceId => {
+            const developersInput = document.getElementById(`codespace-${codespaceId}-developers`);
+            const hoursInput = document.getElementById(`codespace-${codespaceId}-hours`);
+
+            if (developersInput && hoursInput) {
+                const developers = parseInt(developersInput.value) || 0;
+                const hours = parseFloat(hoursInput.value) || 0;
+
+                if (developers > 0 && hours > 0) {
+                    configuredCount++;
+                    totalDevelopers += developers;
+                }
+            }
+        });
+
+        let summary = '';
+        if (configuredCount > 0) {
+            const machineText = configuredCount === 1 ? 'machine' : 'machines';
+            summary = `${configuredCount} ${machineText}, ${totalDevelopers} developer${totalDevelopers > 1 ? 's' : ''}`;
+        } else if (machineCount > 0) {
+            summary = `${machineCount} machine${machineCount > 1 ? 's' : ''} added, none configured`;
+        } else {
+            summary = 'Storage only';
+        }
+
+        if (storedCodespaces > 0 || avgProjectSize > 0) {
+            summary += ` • Storage: ${storedCodespaces} codespaces, ${avgProjectSize} GB avg`;
+        }
+
+        element.textContent = summary;
+    }
+
+    updatePackagesSummary(element) {
+        const storage = parseFloat(document.getElementById('package-storage').value) || 0;
+        const transfer = parseFloat(document.getElementById('package-transfer').value) || 0;
+
+        if (storage === 0 && transfer === 0) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        const parts = [];
+        if (storage > 0) parts.push(`${storage} GB storage`);
+        if (transfer > 0) parts.push(`${transfer} GB transfer/month`);
+
+        element.textContent = parts.join(', ');
+    }
+
+    updateLFSSummary(element) {
+        const storage = parseFloat(document.getElementById('lfs-storage').value) || 0;
+        const bandwidth = parseFloat(document.getElementById('lfs-bandwidth').value) || 0;
+
+        if (storage === 0 && bandwidth === 0) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        const parts = [];
+        if (storage > 0) parts.push(`${storage} GiB storage`);
+        if (bandwidth > 0) parts.push(`${bandwidth} GiB bandwidth/month`);
+
+        element.textContent = parts.join(', ');
+    }
+
+    updateGHASSummary(element) {
+        const committers = parseInt(document.getElementById('ghas-committers').value) || 0;
+        const codeSecurity = document.getElementById('ghas-code-security').checked;
+        const secretProtection = document.getElementById('ghas-secret-protection').checked;
+
+        if (committers === 0 || (!codeSecurity && !secretProtection)) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        const products = [];
+        if (codeSecurity) products.push('Code Security');
+        if (secretProtection) products.push('Secret Protection');
+
+        const committerText = committers === 1 ? 'committer' : 'committers';
+        element.textContent = `${committers} ${committerText} • ${products.join(' + ')}`;
     }
 
     validateFields() {

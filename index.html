@@ -157,6 +157,20 @@
                         Compute from $0.18/hour (2-core), Storage $0.07/GB/month
                     </div>
                     <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="codespaces-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
                         <div id="codespaces-container">
                             <!-- Codespace machine configurations will be added here -->
                         </div>
@@ -175,6 +189,7 @@
                             <strong>Total Monthly Storage:</strong>
                             <span id="total-storage-gb"></span> GB
                         </div>
+                        </div><!-- end section-main-content -->
                     </div>
                 </div>
 
@@ -259,6 +274,20 @@
                         Storage $0.25/GB/month, Data transfer $0.50/GB
                     </div>
                     <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="packages-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
                         <div class="input-group">
                             <label for="package-storage">Storage Needed (GB)</label>
                             <input type="number" id="package-storage" placeholder="0" min="0" max="10000" step="0.1">
@@ -267,6 +296,7 @@
                             <label for="package-transfer">Data Transfer per Month (GB)</label>
                             <input type="number" id="package-transfer" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
+                        </div><!-- end section-main-content -->
                     </div>
                 </div>
 
@@ -291,6 +321,20 @@
                         Free tier varies by plan. Additional storage $0.07/GiB, additional data transfer out $0.0875/GiB
                     </div>
                     <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="lfs-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
                         <p class="lfs-description">In the future, Git LFS will switch to metered billing.</p>
                         <div class="lfs-free-tiers">
                             <div class="free-tier-item">
@@ -311,6 +355,7 @@
                             <label for="lfs-bandwidth">Bandwidth per Month (GiB)</label>
                             <input type="number" id="lfs-bandwidth" placeholder="0" min="0" max="10000" step="0.1">
                         </div>
+                        </div><!-- end section-main-content -->
                     </div>
                 </div>
 
@@ -334,6 +379,20 @@
                         Secure code, from blueprint to execution. Code Security $30/committer, Secret Protection $19/committer
                     </div>
                     <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="ghas-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
                         <p class="ghas-description">Customers pay for unique committers (contributors) that work on Private repositories for which a GitHub Advanced Security product is enabled. Every committer who has contributed to a repository in the last 90 days counts towards the total committer count. Please specify how many committers you expect to be working on your private repositories:</p>
                         <div class="input-group">
                             <label for="ghas-committers">Number of Committers</label>
@@ -362,6 +421,7 @@
                                 </div>
                             </div>
                         </div>
+                        </div><!-- end section-main-content -->
                     </div>
                 </div>
 
