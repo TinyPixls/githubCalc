@@ -97,11 +97,13 @@ body {
     display: grid;
     grid-template-columns: 2fr 3fr;
     gap: 2rem;
-    align-items: start;
+    height: calc(100vh - 100px);
 }
 
 .panel {
     padding: 2rem;
+    overflow-y: auto;
+    height: 100%;
 }
 
 .panel h2 {
@@ -1253,6 +1255,12 @@ input.has-warning:focus {
 @media (max-width: 1024px) {
     .calculator-grid {
         grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .panel {
+        height: auto;
+        overflow-y: visible;
     }
 }
 
