@@ -578,6 +578,20 @@ input.team-size-input:hover {
     margin-top: 0.25rem;
 }
 
+.feature-category-header {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-accent);
+}
+
+.feature-category-header:first-child {
+    margin-top: 0;
+}
+
 /* Common Features Styles */
 .common-features-list {
     display: flex;
