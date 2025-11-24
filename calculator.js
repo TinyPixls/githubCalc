@@ -139,9 +139,23 @@ class GitHubPricingCalculator {
         this.runnerIdCounter = 0;
         this.codespaces = [];
         this.codespaceIdCounter = 0;
+        this.debouncedCalculate = this.debounce(() => this.calculate(), 300);
         this.initEventListeners();
         this.addRunner(); // Add initial runner
         this.addCodespace(); // Add initial codespace machine
+    }
+
+    // Debounce utility function
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     }
 
     initEventListeners() {
@@ -174,9 +188,15 @@ class GitHubPricingCalculator {
             });
         });
 
-        // Auto-calculate on input change
+        // Auto-calculate on input change (debounced for text inputs, immediate for selects/checkboxes)
+        document.addEventListener('input', (e) => {
+            if (e.target.matches('input[type="number"], input[type="text"]')) {
+                this.debouncedCalculate();
+            }
+        });
+
         document.addEventListener('change', (e) => {
-            if (e.target.matches('input, select')) {
+            if (e.target.matches('select, input[type="radio"], input[type="checkbox"]')) {
                 this.calculate();
             }
         });
@@ -186,6 +206,7 @@ class GitHubPricingCalculator {
         usersInput.addEventListener('input', () => {
             this.updateCopilotPlanAvailability();
             this.validateFields();
+            this.debouncedCalculate();
         });
 
         // Copilot users change listener
@@ -193,12 +214,14 @@ class GitHubPricingCalculator {
         copilotUsersInput.addEventListener('input', () => {
             this.updateCopilotPlanAvailability();
             this.validateFields();
+            this.debouncedCalculate();
         });
 
         // GHAS committers validation listener
         const ghasCommittersInput = document.getElementById('ghas-committers');
         ghasCommittersInput.addEventListener('input', () => {
             this.validateFields();
+            this.debouncedCalculate();
         });
 
         // Initialize Copilot plan availability and validation
@@ -564,9 +587,18 @@ class GitHubPricingCalculator {
         const durationInput = runnerCard.querySelector(`#runner-${runnerId}-duration`);
 
         const updateSummary = () => this.updateRunnerSummary(runnerId);
-        typeSelect.addEventListener('change', updateSummary);
-        jobsInput.addEventListener('input', updateSummary);
-        durationInput.addEventListener('input', updateSummary);
+        typeSelect.addEventListener('change', () => {
+            updateSummary();
+            this.calculate();
+        });
+        jobsInput.addEventListener('input', () => {
+            updateSummary();
+            this.debouncedCalculate();
+        });
+        durationInput.addEventListener('input', () => {
+            updateSummary();
+            this.debouncedCalculate();
+        });
 
         // Initialize summary
         this.updateRunnerSummary(runnerId);
@@ -693,12 +725,19 @@ class GitHubPricingCalculator {
         const hoursInput = codespaceCard.querySelector(`#codespace-${codespaceId}-hours`);
 
         const updateSummary = () => this.updateCodespaceSummary(codespaceId);
-        coresSelect.addEventListener('change', updateSummary);
+        coresSelect.addEventListener('change', () => {
+            updateSummary();
+            this.calculate();
+        });
         developersInput.addEventListener('input', () => {
             updateSummary();
             this.validateFields();
+            this.debouncedCalculate();
         });
-        hoursInput.addEventListener('input', updateSummary);
+        hoursInput.addEventListener('input', () => {
+            updateSummary();
+            this.debouncedCalculate();
+        });
 
         // Initialize summary and validation
         this.updateCodespaceSummary(codespaceId);
