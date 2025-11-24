@@ -592,6 +592,13 @@ input.team-size-input:hover {
     margin-top: 0;
 }
 
+.feature-category-description {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin: -0.5rem 0 0.75rem 0;
+    font-style: italic;
+}
+
 /* Common Features Styles */
 .common-features-list {
     display: flex;

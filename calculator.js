@@ -131,6 +131,28 @@ const PRICING = {
     }
 };
 
+// GHAS feature requirements mapping
+const GHAS_REQUIREMENTS = {
+    // Secret Protection features
+    'feature-push-protection': 'secretProtection',
+    'feature-secret-scanning': 'secretProtection',
+    'feature-provider-patterns': 'secretProtection',
+    'feature-validity-checks': 'secretProtection',
+    'feature-copilot-secret-scanning': 'secretProtection',
+    'feature-generic-patterns': 'secretProtection',
+    'feature-custom-patterns': 'secretProtection',
+    'feature-push-protection-bypass': 'secretProtection',
+    'feature-security-insights': 'secretProtection',
+    'feature-scan-history-api': 'secretProtection',
+    // Code Security features
+    'feature-copilot-autofix': 'codeSecurity',
+    'feature-third-party-extensibility': 'codeSecurity',
+    'feature-contextual-vuln': 'codeSecurity',
+    'feature-codeql': 'codeSecurity',
+    'feature-security-campaigns': 'codeSecurity',
+    'feature-dependabot-custom-rules': 'codeSecurity'
+};
+
 // Feature availability by plan
 const FEATURE_AVAILABILITY = {
     'feature-repo-rules': { free: 'public', pro: true, team: true, enterprise: true, name: 'Repository rules' },
@@ -1280,10 +1302,28 @@ class GitHubPricingCalculator {
 
         let bestPlan = null;
         let lowestCost = Infinity;
+        let bestIncludedFeatureCount = -1;
 
         availablePlans.forEach(([planKey, breakdown]) => {
-            if (breakdown.totalCost < lowestCost) {
+            // Count fully included features (no caveats or add-ons)
+            let includedFeatureCount = 0;
+            if (this.usage.selectedFeatures && this.usage.selectedFeatures.length > 0) {
+                this.usage.selectedFeatures.forEach(featureId => {
+                    const feature = FEATURE_AVAILABILITY[featureId];
+                    if (feature && feature[planKey] === true) {
+                        includedFeatureCount++;
+                    }
+                });
+            }
+
+            // Price is primary factor, feature inclusion is tie-breaker
+            const isBetter =
+                breakdown.totalCost < lowestCost ||
+                (breakdown.totalCost === lowestCost && includedFeatureCount > bestIncludedFeatureCount);
+
+            if (isBetter) {
                 lowestCost = breakdown.totalCost;
+                bestIncludedFeatureCount = includedFeatureCount;
                 bestPlan = planKey;
             }
         });
@@ -1326,7 +1366,8 @@ class GitHubPricingCalculator {
                document.getElementById('toggle-packages').checked ||
                document.getElementById('toggle-lfs').checked ||
                document.getElementById('toggle-codespaces').checked ||
-               document.getElementById('toggle-ghas').checked;
+               document.getElementById('toggle-ghas').checked ||
+               document.getElementById('toggle-other-features').checked;
     }
 
     renderResults(bestPlan) {
@@ -1575,8 +1616,27 @@ class GitHubPricingCalculator {
                         statusClass = 'exceeded';
                     }
                 } else if (availability === 'addon') {
-                    statusText = 'Add-on required';
-                    statusClass = 'overage';
+                    // Check if this feature requires GHAS
+                    const ghasRequirement = GHAS_REQUIREMENTS[featureId];
+                    if (ghasRequirement) {
+                        const ghasEnabled = ghasRequirement === 'secretProtection'
+                            ? this.usage.ghasSecretProtection
+                            : this.usage.ghasCodeSecurity;
+
+                        if (ghasEnabled) {
+                            statusText = 'Included';
+                            statusClass = 'included';
+                        } else {
+                            const requirementName = ghasRequirement === 'secretProtection'
+                                ? 'Secret Protection'
+                                : 'Code Security';
+                            statusText = `Requires ${requirementName}`;
+                            statusClass = 'overage';
+                        }
+                    } else {
+                        statusText = 'Add-on required';
+                        statusClass = 'overage';
+                    }
                 } else if (availability === 'server') {
                     statusText = 'Enterprise Server only';
                     statusClass = 'overage';
