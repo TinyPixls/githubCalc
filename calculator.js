@@ -339,6 +339,7 @@ class GitHubPricingCalculator {
         const menu = document.getElementById('plan-visibility-menu');
         const resetLink = document.getElementById('reset-visibility');
         const checkboxes = menu.querySelectorAll('input[type="checkbox"]');
+        const hideUnavailableCheckbox = document.getElementById('hide-unavailable-plans');
 
         // Load saved visibility state from localStorage
         this.loadPlanVisibility();
@@ -391,10 +392,15 @@ class GitHubPricingCalculator {
                 const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
                 checkboxes.forEach(checkbox => {
                     const plan = checkbox.dataset.plan;
-                    if (visibility[plan] !== undefined) {
+                    if (plan && visibility[plan] !== undefined) {
                         checkbox.checked = visibility[plan];
                     }
                 });
+                // Load hide unavailable setting
+                const hideUnavailable = document.getElementById('hide-unavailable-plans');
+                if (hideUnavailable && visibility.hideUnavailable !== undefined) {
+                    hideUnavailable.checked = visibility.hideUnavailable;
+                }
             } catch (e) {
                 console.error('Error loading plan visibility:', e);
             }
@@ -405,22 +411,30 @@ class GitHubPricingCalculator {
         const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
         const visibility = {};
         checkboxes.forEach(checkbox => {
-            visibility[checkbox.dataset.plan] = checkbox.checked;
+            if (checkbox.dataset.plan) {
+                visibility[checkbox.dataset.plan] = checkbox.checked;
+            }
         });
+        // Save hide unavailable setting
+        const hideUnavailable = document.getElementById('hide-unavailable-plans');
+        if (hideUnavailable) {
+            visibility.hideUnavailable = hideUnavailable.checked;
+        }
         localStorage.setItem('planVisibility', JSON.stringify(visibility));
     }
 
     resetPlanVisibility() {
         const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
-            checkbox.checked = true;
+            checkbox.checked = checkbox.id === 'hide-unavailable-plans' ? false : true;
         });
         localStorage.removeItem('planVisibility');
         this.updatePlanVisibility();
     }
 
     updatePlanVisibility() {
-        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"][data-plan]');
+        const hideUnavailableCheckbox = document.getElementById('hide-unavailable-plans');
         const summary = document.getElementById('visibility-summary');
 
         let hiddenCount = 0;
@@ -431,12 +445,21 @@ class GitHubPricingCalculator {
             const planCard = document.querySelector(`.plan-card[data-plan="${plan}"]`);
 
             if (planCard) {
-                if (checkbox.checked) {
-                    planCard.style.display = '';
-                } else {
+                let shouldHide = !checkbox.checked;
+
+                // Also hide if "hide unavailable" is checked and plan has "not-available" class
+                if (hideUnavailableCheckbox && hideUnavailableCheckbox.checked && planCard.classList.contains('not-available')) {
+                    shouldHide = true;
+                }
+
+                if (shouldHide) {
                     planCard.style.display = 'none';
-                    hiddenCount++;
-                    hiddenPlans.push(checkbox.nextElementSibling.textContent);
+                    if (!checkbox.checked) {
+                        hiddenCount++;
+                        hiddenPlans.push(checkbox.nextElementSibling.textContent);
+                    }
+                } else {
+                    planCard.style.display = '';
                 }
             }
         });
@@ -1545,9 +1568,10 @@ class GitHubPricingCalculator {
         }
 
         // Render each plan card
+        const hasRecommendation = bestPlan && this.hasAnyFeaturesEnabled();
         for (const [planKey, breakdown] of Object.entries(this.results)) {
             const plan = PRICING.plans[planKey];
-            const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey);
+            const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey, hasRecommendation);
             plansGrid.appendChild(card);
         }
 
@@ -1565,12 +1589,12 @@ class GitHubPricingCalculator {
         return icons[planKey] || '';
     }
 
-    createPlanCard(planKey, plan, breakdown, isBest) {
+    createPlanCard(planKey, plan, breakdown, isBest, hasRecommendation) {
         const card = document.createElement('div');
         card.className = 'plan-card';
         card.dataset.plan = planKey;
 
-        if (isBest && breakdown.canSupport) {
+        if (isBest && breakdown.canSupport && hasRecommendation) {
             card.classList.add('recommended');
         }
 
@@ -1579,7 +1603,7 @@ class GitHubPricingCalculator {
         }
 
         let badgeHtml = '';
-        if (isBest && breakdown.canSupport) {
+        if (isBest && breakdown.canSupport && hasRecommendation) {
             badgeHtml = '<span class="plan-badge best-value">Best Value</span>';
         } else if (!breakdown.canSupport) {
             badgeHtml = '<span class="plan-badge not-available">Not Available</span>';

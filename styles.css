@@ -191,6 +191,12 @@ body {
     display: none;
 }
 
+.plan-visibility-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 0.5rem 0;
+}
+
 .plan-visibility-item {
     display: flex;
     align-items: center;
