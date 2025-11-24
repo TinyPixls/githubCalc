@@ -1195,19 +1195,33 @@ class GitHubPricingCalculator {
         }
     }
 
+    hasAnyFeaturesEnabled() {
+        // Check if any feature sections are enabled (not just team size)
+        return document.getElementById('toggle-copilot').checked ||
+               document.getElementById('toggle-actions').checked ||
+               document.getElementById('toggle-packages').checked ||
+               document.getElementById('toggle-lfs').checked ||
+               document.getElementById('toggle-codespaces').checked ||
+               document.getElementById('toggle-ghas').checked;
+    }
+
     renderResults(bestPlan) {
         const plansGrid = document.getElementById('plans-grid');
         plansGrid.innerHTML = '';
 
-        // Render recommendation
-        if (bestPlan) {
-            const recommendation = document.getElementById('recommendation');
+        const recommendation = document.getElementById('recommendation');
+
+        // Only show recommendation if bestPlan exists AND at least one feature is enabled
+        if (bestPlan && this.hasAnyFeaturesEnabled()) {
             const recommendationText = document.getElementById('recommendation-text');
             const planName = PRICING.plans[bestPlan].name;
             const totalCost = this.results[bestPlan].totalCost;
 
             recommendationText.textContent = `Based on your usage, the ${planName} plan is most cost-effective at $${totalCost.toFixed(2)}/month.`;
             recommendation.classList.remove('hidden');
+        } else {
+            // Hide recommendation if no features are enabled
+            recommendation.classList.add('hidden');
         }
 
         // Render each plan card
