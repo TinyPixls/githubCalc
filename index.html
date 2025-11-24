@@ -19,7 +19,11 @@
         <div class="calculator-grid">
             <!-- Usage Input Panel -->
             <div class="panel usage-panel">
-                <h2>Features</h2>
+                <div class="panel-header">
+                    <h2>Features</h2>
+                    <button id="calculate-btn" class="btn-calculate">Calculate Costs</button>
+                </div>
+                <div class="panel-content">
 
                 <div class="section team-size-section" data-section="team-size">
                     <div class="team-size-header">
@@ -792,12 +796,15 @@
                     </div>
                 </div>
 
-                <button id="calculate-btn" class="btn-primary">Calculate Costs</button>
+                </div><!-- end panel-content -->
             </div>
 
             <!-- Plan Comparison Panel -->
             <div class="panel comparison-panel">
-                <h2>Plan Comparison</h2>
+                <div class="panel-header">
+                    <h2>Plan Comparison</h2>
+                </div>
+                <div class="panel-content">
 
                 <div id="recommendation" class="recommendation hidden">
                     <div class="recommendation-content">
@@ -825,6 +832,8 @@
 </li>
                     </ul>
                 </div>
+
+                </div><!-- end panel-content -->
             </div>
         </div>
     </div>
