@@ -1437,11 +1437,13 @@ input.has-warning:focus {
 @media (min-width: 1800px) {
     .header-content {
         max-width: none;
+        padding-left: 2rem;
+        padding-right: 2rem;
     }
 
     .container {
         max-width: none;
-        padding: 0;
+        padding: 0 2rem;
     }
 
     .calculator-grid {
@@ -1457,6 +1459,11 @@ input.has-warning:focus {
 
     .comparison-panel {
         height: calc(100vh - 100px);
+        overflow-x: hidden;
+    }
+
+    .panel-content {
+        overflow-x: hidden;
     }
 
     .plans-grid {
