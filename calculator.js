@@ -917,6 +917,13 @@ class GitHubPricingCalculator {
             breakdown.reasons.push(`Pro plan only supports 1 user (you have ${usage.users} users)`);
         }
 
+        // GitHub Advanced Security is only available in Team and Enterprise plans
+        const ghasEnabled = usage.ghasCommitters > 0 && (usage.ghasCodeSecurity || usage.ghasSecretProtection);
+        if ((planKey === 'free' || planKey === 'pro') && ghasEnabled) {
+            breakdown.canSupport = false;
+            breakdown.reasons.push('GitHub Advanced Security is only available in Team and Enterprise plans');
+        }
+
         // GitHub Copilot calculation
         let copilotBaseCost = 0;
         let copilotOverageCost = 0;
@@ -1234,7 +1241,7 @@ class GitHubPricingCalculator {
 
     getPlanIcon(planKey) {
         const icons = {
-            free: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>',
+            free: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>',
             pro: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
             team: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
             enterprise: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><line x1="8" y1="6" x2="8" y2="6" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="6" x2="12" y2="6" stroke-width="2" stroke-linecap="round"></line><line x1="16" y1="6" x2="16" y2="6" stroke-width="2" stroke-linecap="round"></line><line x1="8" y1="10" x2="8" y2="10" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="10" x2="12" y2="10" stroke-width="2" stroke-linecap="round"></line><line x1="16" y1="10" x2="16" y2="10" stroke-width="2" stroke-linecap="round"></line><line x1="8" y1="14" x2="8" y2="14" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="14" x2="12" y2="14" stroke-width="2" stroke-linecap="round"></line><line x1="16" y1="14" x2="16" y2="14" stroke-width="2" stroke-linecap="round"></line></svg>'
