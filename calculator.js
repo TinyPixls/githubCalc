@@ -1571,9 +1571,27 @@ class GitHubPricingCalculator {
         plansGrid.innerHTML = '';
 
         const recommendation = document.getElementById('recommendation');
+        const teamSize = parseInt(document.getElementById('users').value) || 0;
+        const hasFeatures = this.hasAnyFeaturesEnabled();
+
+        // Show empty state if no team size and no features enabled
+        if (teamSize === 0 && !hasFeatures) {
+            plansGrid.innerHTML = `
+                <div class="empty-state">
+                    <svg class="empty-state-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        <path d="M9 12h6m-6 4h6"></path>
+                    </svg>
+                    <h3>Get Started</h3>
+                    <p>Enter your team size and enable features to compare GitHub plans</p>
+                </div>
+            `;
+            recommendation.classList.add('hidden');
+            return;
+        }
 
         // Only show recommendation if bestPlan exists AND at least one feature is enabled
-        if (bestPlan && this.hasAnyFeaturesEnabled()) {
+        if (bestPlan && hasFeatures) {
             const recommendationText = document.getElementById('recommendation-text');
             const planName = PRICING.plans[bestPlan].name;
             const totalCost = this.results[bestPlan].totalCost;
@@ -1586,7 +1604,7 @@ class GitHubPricingCalculator {
         }
 
         // Render each plan card
-        const hasRecommendation = bestPlan && this.hasAnyFeaturesEnabled();
+        const hasRecommendation = bestPlan && hasFeatures;
         for (const [planKey, breakdown] of Object.entries(this.results)) {
             const plan = PRICING.plans[planKey];
             const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey, hasRecommendation);
