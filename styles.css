@@ -28,7 +28,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
     background-color: #f0f4ff;
     background-image:
-        url('data:image/svg+xml;utf8,<svg width="173.2" height="150" xmlns="http://www.w3.org/2000/svg" transform="rotate(30)"><defs><pattern id="hexagons" width="173.2" height="150" patternUnits="userSpaceOnUse"><g transform="rotate(30 86.6 75)"><polygon points="86.6,25 129.9,50 129.9,100 86.6,125 43.3,100 43.3,50" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/><polygon points="0,75 43.3,100 43.3,150 0,175 -43.3,150 -43.3,100" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/><polygon points="173.2,75 216.5,100 216.5,150 173.2,175 129.9,150 129.9,100" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/></g></pattern></defs><rect width="100%" height="100%" fill="url(%23hexagons)"/></svg>'),
+        url('grid.svg'),
         linear-gradient(to bottom,
             transparent 0%,
             transparent 50%,
