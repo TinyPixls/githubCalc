@@ -303,6 +303,7 @@ input.team-size-input:hover {
 
 .section-icon {
     flex-shrink: 0;
+    color: var(--color-accent);
 }
 
 .section-info {
