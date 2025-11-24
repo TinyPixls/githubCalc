@@ -172,7 +172,7 @@ input.team-size-input::-webkit-outer-spin-button {
 
 input.team-size-input::placeholder {
     color: var(--color-text-secondary);
-    opacity: 0.4;
+    opacity: 0.25;
     font-weight: 400;
     font-size: 1rem;
 }
@@ -607,6 +607,12 @@ select:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+input[type="number"]::placeholder,
+select::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.3;
 }
 
 .btn-primary {
