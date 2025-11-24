@@ -350,6 +350,11 @@ class GitHubPricingCalculator {
             toggleButton.classList.toggle('open');
         });
 
+        // Prevent menu from closing when clicking inside it
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (!menu.contains(e.target) && !toggleButton.contains(e.target)) {
@@ -360,7 +365,8 @@ class GitHubPricingCalculator {
 
         // Handle checkbox changes
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
+            checkbox.addEventListener('change', (e) => {
+                e.stopPropagation();
                 this.updatePlanVisibility();
                 this.savePlanVisibility();
             });
@@ -369,6 +375,7 @@ class GitHubPricingCalculator {
         // Handle reset
         resetLink.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             this.resetPlanVisibility();
         });
 
@@ -421,7 +428,7 @@ class GitHubPricingCalculator {
 
         checkboxes.forEach(checkbox => {
             const plan = checkbox.dataset.plan;
-            const planCard = document.querySelector(`[data-plan="${plan}"]`);
+            const planCard = document.querySelector(`.plan-card[data-plan="${plan}"]`);
 
             if (planCard) {
                 if (checkbox.checked) {
