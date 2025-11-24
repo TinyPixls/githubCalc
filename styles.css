@@ -115,7 +115,6 @@ body {
     align-items: center;
     padding: 2rem 2rem 1rem 2rem;
     border-bottom: 1px solid var(--color-border);
-    margin-bottom: 1rem;
 }
 
 .panel-header h2 {
