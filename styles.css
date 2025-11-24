@@ -1435,6 +1435,10 @@ input.has-warning:focus {
 }
 
 @media (min-width: 1800px) {
+    .header-content {
+        max-width: none;
+    }
+
     .container {
         max-width: none;
         padding: 0;
