@@ -427,6 +427,152 @@
                     </div>
                 </div>
 
+                <div class="section collapsed" data-section="other-features">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            Other Feature Options
+                        </h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-other-features">Use</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="section-checkbox" id="toggle-other-features">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="section-info">
+                        Track additional features that affect plan availability
+                    </div>
+                    <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="other-features-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
+                        <p class="feature-description">Select features your team needs. Some features are only available on specific plans or for public repositories.</p>
+                        <div class="feature-checkboxes">
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-pages-wikis">
+                                <span class="feature-label">Pages and Wikis <span class="feature-note">(Free: public only, Team+: full access)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-draft-pr">
+                                <span class="feature-label">Draft Pull Requests <span class="feature-note">(Free: public only, Team+: full access)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-environment-protection">
+                                <span class="feature-label">Environment Protection Rules <span class="feature-note">(Free/Team: public only, Enterprise: full access)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-repository-insights">
+                                <span class="feature-label">Repository Insights <span class="feature-note">(Free: public only, Team+: full access)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-required-2fa">
+                                <span class="feature-label">Required 2FA <span class="feature-note">(Team+ only)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-audit-log">
+                                <span class="feature-label">Audit Log <span class="feature-note">(Team+ only)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-ip-allow-list">
+                                <span class="feature-label">IP Allow List <span class="feature-note">(Enterprise only)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-saml-sso">
+                                <span class="feature-label">SAML SSO <span class="feature-note">(Enterprise only)</span></span>
+                            </label>
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-standard-support">
+                                <span class="feature-label">Standard Support <span class="feature-note">(Team+ only)</span></span>
+                            </label>
+                        </div>
+                        </div><!-- end section-main-content -->
+                    </div>
+                </div>
+
+                <div class="section info-section collapsed" data-section="common-features">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Features Common to All Plans
+                        </h3>
+                    </div>
+                    <div class="section-info">
+                        Core features available on all GitHub plans
+                    </div>
+                    <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="common-features-summary">Informational</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
+                        <p class="feature-description">These features are included in all GitHub plans (Free, Pro, Team, and Enterprise):</p>
+                        <div class="common-features-list">
+                            <div class="feature-category">
+                                <h4>Code Management</h4>
+                                <ul>
+                                    <li>Unlimited public repositories</li>
+                                    <li>Unlimited private repositories</li>
+                                    <li>Code reviews</li>
+                                    <li>Pull requests</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h4>Collaboration</h4>
+                                <ul>
+                                    <li>Issues and milestones</li>
+                                    <li>Projects</li>
+                                    <li>Team discussions</li>
+                                    <li>Organization and team management</li>
+                                    <li>Unlimited collaborators for public repositories</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h4>Security</h4>
+                                <ul>
+                                    <li>GitHub Security Advisories</li>
+                                    <li>Dependabot version updates</li>
+                                    <li>Dependabot security updates</li>
+                                    <li>Dependency graph</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h4>Support</h4>
+                                <ul>
+                                    <li>Community Support</li>
+                                </ul>
+                            </div>
+                        </div>
+                        </div><!-- end section-main-content -->
+                    </div>
+                </div>
+
                 <button id="calculate-btn" class="btn-primary">Calculate Costs</button>
             </div>
 
