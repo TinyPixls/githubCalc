@@ -26,13 +26,13 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg,
+    background: linear-gradient(to bottom,
         #f0f4ff 0%,
-        #fff5f5 25%,
-        #f0fff4 50%,
-        #fffbf0 75%,
-        #f5f0ff 100%);
-    background-attachment: fixed;
+        #fff5f5 15%,
+        #f0fff4 30%,
+        #fffbf0 45%,
+        #e8e8ea 60%,
+        #e8e8ea 100%);
     color: var(--color-text);
     line-height: 1.6;
     min-height: 100vh;
@@ -40,7 +40,7 @@ body {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -86,7 +86,7 @@ h1 {
     margin-bottom: 1.5rem;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--color-border);
+    border: none;
     border-radius: var(--border-radius);
     padding: 1.5rem;
     box-shadow: var(--shadow-md);
@@ -884,7 +884,7 @@ select:focus {
 
 .plan-card {
     background: var(--color-bg-secondary);
-    border: 2px solid var(--color-border);
+    border: none;
     border-radius: var(--border-radius);
     padding: 1.5rem;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -892,14 +892,12 @@ select:focus {
 }
 
 .plan-card.recommended {
-    border-color: var(--color-accent);
     background: linear-gradient(135deg, rgba(9, 105, 218, 0.08) 0%, rgba(9, 105, 218, 0.04) 100%);
     box-shadow: var(--shadow-md);
 }
 
 .plan-card.not-available {
     opacity: 0.6;
-    border-color: var(--color-danger);
 }
 
 .plan-header {
@@ -1022,7 +1020,7 @@ select:focus {
     margin-top: 2rem;
     padding: 1.5rem;
     background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
+    border: none;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
 }
