@@ -42,7 +42,10 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     min-height: 100vh;
-    padding: 2rem 1rem;
+    padding-top: 100px;
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .container {
@@ -50,22 +53,34 @@ body {
     margin: 0 auto;
 }
 
-header {
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    padding: 0.75rem 1rem;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
     text-align: center;
-    margin-bottom: 3rem;
-    padding: 2rem;
 }
 
-h1 {
-    font-size: 2.5rem;
+.app-header h1 {
+    font-size: 1.25rem;
     color: var(--color-text);
-    margin-bottom: 0.5rem;
-    font-weight: 300;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
 }
 
-.subtitle {
+.app-header .subtitle {
     color: var(--color-text-secondary);
-    font-size: 1.1rem;
+    font-size: 0.85rem;
+    margin: 0;
 }
 
 .calculator-grid {
@@ -189,6 +204,8 @@ input.team-size-input:hover {
     margin-bottom: 1.5rem;
     opacity: 1;
     transition: opacity 0.2s ease;
+    overflow: visible;
+    padding: 0.25rem 0;
 }
 
 .section.content-collapsed .section-collapse-toggle {
@@ -537,7 +554,7 @@ input.team-size-input:hover {
 }
 
 .toggle-switch input:checked + .toggle-slider:before {
-    transform: translateX(20px);
+    transform: translateX(19px);
 }
 
 .toggle-switch input:focus + .toggle-slider {
