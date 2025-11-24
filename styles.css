@@ -947,6 +947,14 @@ select:focus {
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.plan-icon {
+    flex-shrink: 0;
+    color: var(--color-accent);
 }
 
 .plan-badge {
@@ -982,7 +990,7 @@ select:focus {
 
 .base-cost-amount {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 400;
     color: var(--color-text);
 }
 
@@ -1046,7 +1054,7 @@ select:focus {
 
 .total-value {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 400;
     color: var(--color-accent);
 }
 

@@ -1217,7 +1217,7 @@ class GitHubPricingCalculator {
             const planName = PRICING.plans[bestPlan].name;
             const totalCost = this.results[bestPlan].totalCost;
 
-            recommendationText.textContent = `Based on your usage, the ${planName} plan is most cost-effective at $${totalCost.toFixed(2)}/month.`;
+            recommendationText.textContent = `Based on your usage, the ${planName} plan is most cost-effective at $${totalCost.toFixed(2)} / month.`;
             recommendation.classList.remove('hidden');
         } else {
             // Hide recommendation if no features are enabled
@@ -1230,6 +1230,16 @@ class GitHubPricingCalculator {
             const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey);
             plansGrid.appendChild(card);
         }
+    }
+
+    getPlanIcon(planKey) {
+        const icons = {
+            free: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>',
+            pro: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
+            team: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+            enterprise: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>'
+        };
+        return icons[planKey] || '';
     }
 
     createPlanCard(planKey, plan, breakdown, isBest) {
@@ -1427,12 +1437,12 @@ class GitHubPricingCalculator {
 
         card.innerHTML = `
             <div class="plan-header">
-                <h3 class="plan-name">${plan.name}</h3>
+                <h3 class="plan-name">${this.getPlanIcon(planKey)}${plan.name}</h3>
                 ${badgeHtml}
             </div>
             <div class="plan-base-cost">
                 <div class="base-cost-label">Base Plan Cost</div>
-                <div class="base-cost-amount">${baseCostDisplay}<span class="period">/month</span></div>
+                <div class="base-cost-amount">${baseCostDisplay}<span class="period"> / month</span></div>
             </div>
             ${unavailableReason}
             <div class="cost-breakdown">
