@@ -25,8 +25,8 @@
                     <div class="team-size-header">
                         <h3>Team Size</h3>
                         <input type="number" id="users" class="team-size-input" placeholder="# of users" min="1" max="10000">
-                        <span class="validation-warning" id="team-size-warning" style="display: none;">Please enter team size to calculate costs</span>
                     </div>
+                    <span class="validation-warning" id="team-size-warning" style="display: none;">Please enter team size to calculate costs</span>
                 </div>
 
                 <div class="section collapsed" data-section="copilot">
@@ -65,8 +65,8 @@
                         <div class="section-main-content">
                         <!-- Number of Copilot Users -->
                         <div class="input-group" style="margin-bottom: 1.5rem;">
-                            <label for="copilot-users">Number of Copilot Users (leave empty to use team size)</label>
-                            <input type="number" id="copilot-users" placeholder="Leave empty to use team size" min="0" max="100000">
+                            <label for="copilot-users">Number of Copilot Users</label>
+                            <input type="number" id="copilot-users" placeholder="Leave blank to use team size" min="0" max="100000">
                             <span class="validation-error" id="copilot-users-error" style="display: none;">Cannot exceed team size</span>
                         </div>
 
@@ -399,7 +399,7 @@
                         <p class="ghas-description">Customers pay for unique committers (contributors) that work on Private repositories for which a GitHub Advanced Security product is enabled. Every committer who has contributed to a repository in the last 90 days counts towards the total committer count. Please specify how many committers you expect to be working on your private repositories:</p>
                         <div class="input-group">
                             <label for="ghas-committers">Number of Committers</label>
-                            <input type="number" id="ghas-committers" placeholder="e.g. 10" min="0" max="10000">
+                            <input type="number" id="ghas-committers" placeholder="Leave blank to use team size" min="0" max="10000">
                             <span class="validation-error" id="ghas-committers-error" style="display: none;">Cannot exceed team size</span>
                         </div>
                         <div class="ghas-products">

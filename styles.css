@@ -1228,8 +1228,10 @@ select::placeholder {
     display: block;
     color: #f59e0b;
     font-size: 0.875rem;
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     font-weight: 500;
+    width: 100%;
 }
 
 input.has-warning {

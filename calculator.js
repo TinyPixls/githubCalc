@@ -257,7 +257,8 @@ class GitHubPricingCalculator {
                 } else {
                     section.classList.add('collapsed');
                 }
-                // Trigger recalculation when section is toggled
+                // Trigger validation and recalculation when section is toggled
+                this.validateFields();
                 this.calculate();
             });
         });
