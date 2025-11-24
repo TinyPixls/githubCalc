@@ -7,22 +7,30 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>GitHub Pricing Calculator</h1>
+    <header class="app-header">
+        <div class="header-content">
+            <h1>Unofficial Github pricing calculator</h1>
             <p class="subtitle">Compare plans based on your actual usage</p>
-        </header>
+        </div>
+    </header>
+
+    <div class="container">
 
         <div class="calculator-grid">
             <!-- Usage Input Panel -->
             <div class="panel usage-panel">
-                <h2>Features</h2>
+                <div class="panel-header">
+                    <h2>Features</h2>
+                    <button id="calculate-btn" class="btn-calculate">Calculate Costs</button>
+                </div>
+                <div class="panel-content">
 
                 <div class="section team-size-section" data-section="team-size">
                     <div class="team-size-header">
                         <h3>Team Size</h3>
                         <input type="number" id="users" class="team-size-input" placeholder="# of users" min="1" max="10000">
                     </div>
+                    <span class="validation-warning" id="team-size-warning" style="display: none;">Please enter team size to calculate costs</span>
                 </div>
 
                 <div class="section collapsed" data-section="copilot">
@@ -61,8 +69,8 @@
                         <div class="section-main-content">
                         <!-- Number of Copilot Users -->
                         <div class="input-group" style="margin-bottom: 1.5rem;">
-                            <label for="copilot-users">Number of Copilot Users (leave empty to use team size)</label>
-                            <input type="number" id="copilot-users" placeholder="Leave empty to use team size" min="0" max="100000">
+                            <label for="copilot-users">Number of Copilot Users</label>
+                            <input type="number" id="copilot-users" placeholder="Leave blank to use team size" min="0" max="100000">
                             <span class="validation-error" id="copilot-users-error" style="display: none;">Cannot exceed team size</span>
                         </div>
 
@@ -231,7 +239,6 @@
                         <div class="toggle-option">
                             <span class="toggle-label">Primarily Public Repositories</span>
                             <div class="toggle-wrapper">
-                                <label class="toggle-label-text" for="public-repos">Free for public</label>
                                 <label class="toggle-switch">
                                     <input type="checkbox" id="public-repos">
                                     <span class="toggle-slider"></span>
@@ -396,7 +403,7 @@
                         <p class="ghas-description">Customers pay for unique committers (contributors) that work on Private repositories for which a GitHub Advanced Security product is enabled. Every committer who has contributed to a repository in the last 90 days counts towards the total committer count. Please specify how many committers you expect to be working on your private repositories:</p>
                         <div class="input-group">
                             <label for="ghas-committers">Number of Committers</label>
-                            <input type="number" id="ghas-committers" placeholder="e.g. 10" min="0" max="10000">
+                            <input type="number" id="ghas-committers" placeholder="Leave blank to use team size" min="0" max="10000">
                             <span class="validation-error" id="ghas-committers-error" style="display: none;">Cannot exceed team size</span>
                         </div>
                         <div class="ghas-products">
@@ -425,12 +432,412 @@
                     </div>
                 </div>
 
-                <button id="calculate-btn" class="btn-primary">Calculate Costs</button>
+                <div class="section collapsed" data-section="other-features">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            <svg class="section-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Other Feature Options
+                        </h3>
+                        <div class="section-checkbox-wrapper">
+                            <label class="section-checkbox-label" for="toggle-other-features">Use</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="section-checkbox" id="toggle-other-features">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="section-info">
+                        Track additional features that affect plan availability
+                    </div>
+                    <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Summary when collapsed -->
+                        <div class="section-summary" style="display: none;">
+                            <span id="other-features-summary">Not configured</span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
+                        <p class="feature-description">Select features your team needs. Features show availability by plan tier.</p>
+
+                        <div class="feature-checkboxes">
+                            <!-- Repository & Code Review Features -->
+                            <h4 class="feature-category-header">Repository & Code Review Features</h4>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-repo-rules">
+                                <span class="feature-label">Repository rules <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-code-owners">
+                                <span class="feature-label">Code owners <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-draft-pr">
+                                <span class="feature-label">Draft pull requests <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-multiple-pr-assignees">
+                                <span class="feature-label">Multiple pull request assignees <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-repository-insights">
+                                <span class="feature-label">Repository insights <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-scheduled-reminders">
+                                <span class="feature-label">Scheduled reminders <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-auto-code-review">
+                                <span class="feature-label">Automatic code review assignment <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-environment-protection">
+                                <span class="feature-label">Environment protection rules <span class="feature-note">Enterprise (All repos). All others: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-environment-deployment">
+                                <span class="feature-label">Environment deployment branches and secrets <span class="feature-note">Pro plans and up</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-multiple-reviewers">
+                                <span class="feature-label">Multiple reviewers in pull requests <span class="feature-note">Pro plans and up</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-required-reviewers">
+                                <span class="feature-label">Required reviewers <span class="feature-note">Pro plans and up</span></span>
+                            </label>
+
+                            <!-- Collaboration -->
+                            <h4 class="feature-category-header">Collaboration</h4>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-pages-wikis">
+                                <span class="feature-label">Pages and wikis <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-multiple-issue-assignees">
+                                <span class="feature-label">Multiple issue assignees <span class="feature-note">All plans. Free plan: Public repos only</span></span>
+                            </label>
+
+                            <!-- Secret Protection -->
+                            <h4 class="feature-category-header">Secret Protection</h4>
+                            <p class="feature-category-description">Requires Secret Protection add-on in GitHub Advanced Security</p>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-push-protection">
+                                <span class="feature-label">Push protection <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-secret-scanning">
+                                <span class="feature-label">Secret scanning <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-provider-patterns">
+                                <span class="feature-label">Provider patterns <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-validity-checks">
+                                <span class="feature-label">Validity checks <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-copilot-secret-scanning">
+                                <span class="feature-label">Copilot secret scanning <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-generic-patterns">
+                                <span class="feature-label">Generic patterns <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-custom-patterns">
+                                <span class="feature-label">Custom patterns <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-push-protection-bypass">
+                                <span class="feature-label">Push protection bypass controls <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-security-insights">
+                                <span class="feature-label">Insights in security overview <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-scan-history-api">
+                                <span class="feature-label">Scan history API <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <!-- Code Security -->
+                            <h4 class="feature-category-header">Code Security</h4>
+                            <p class="feature-category-description">Requires Code Security add-on in GitHub Advanced Security</p>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-copilot-autofix">
+                                <span class="feature-label">Copilot Autofix <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-third-party-extensibility">
+                                <span class="feature-label">Third party extensibility for code scanning <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-contextual-vuln">
+                                <span class="feature-label">Contextual vulnerability intelligence <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-codeql">
+                                <span class="feature-label">CodeQL <span class="feature-note">Pro plans and up (add-on). Free plan: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-security-campaigns">
+                                <span class="feature-label">Security campaigns <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-dependabot-custom-rules">
+                                <span class="feature-label">Dependabot custom auto-triage rules <span class="feature-note">Pro plans and up (add-on)</span></span>
+                            </label>
+
+                            <!-- Platform Security and Compliance -->
+                            <h4 class="feature-category-header">Platform Security and Compliance</h4>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-artifact-attestations">
+                                <span class="feature-label">Artifact attestations <span class="feature-note">Enterprise (All repos). All others: Public repos only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-required-2fa">
+                                <span class="feature-label">Required 2FA <span class="feature-note">All plans</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-audit-log">
+                                <span class="feature-label">Audit log <span class="feature-note">Pro plans and up</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-audit-log-api">
+                                <span class="feature-label">Audit log API <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-github-connect">
+                                <span class="feature-label">GitHub Connect <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-saml-sso">
+                                <span class="feature-label">SAML single sign-on (SSO) <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-ldap">
+                                <span class="feature-label">LDAP <span class="feature-note">Enterprise Server only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-ip-allow-list">
+                                <span class="feature-label">IP allow list <span class="feature-note">Enterprise Cloud only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-data-residency">
+                                <span class="feature-label">Data residency <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-emu">
+                                <span class="feature-label">Enterprise Managed Users <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-scim">
+                                <span class="feature-label">User provisioning through SCIM <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-enterprise-account">
+                                <span class="feature-label">Enterprise Account (multi-org management) <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-soc-reports">
+                                <span class="feature-label">SOC1, SOC2 type 2 reports <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-fedramp">
+                                <span class="feature-label">FedRAMP Tailored ATO <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <!-- Marketplace and Integrations -->
+                            <h4 class="feature-category-header">Marketplace and Integrations</h4>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-pre-receive-hooks">
+                                <span class="feature-label">Pre-receive hooks <span class="feature-note">Enterprise Server only</span></span>
+                            </label>
+
+                            <!-- Support and Deployment -->
+                            <h4 class="feature-category-header">Support and Deployment</h4>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-standard-support">
+                                <span class="feature-label">Standard Support (Web) <span class="feature-note">Pro plans and up</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-premium-support">
+                                <span class="feature-label">Premium/Premium Plus Support <span class="feature-note">Enterprise only (add-on)</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-invoice-billing">
+                                <span class="feature-label">Invoice billing <span class="feature-note">Enterprise only</span></span>
+                            </label>
+
+                            <label class="feature-checkbox-item">
+                                <input type="checkbox" id="feature-self-hosted">
+                                <span class="feature-label">Self-hosted deployment <span class="feature-note">Enterprise Server only</span></span>
+                            </label>
+                        </div>
+                        </div><!-- end section-main-content -->
+                    </div>
+                </div>
+
+                <div class="section content-collapsed" data-section="common-features">
+                    <div class="section-header-wrapper">
+                        <h3>
+                            Features Common to All Plans
+                        </h3>
+                    </div>
+                    <div class="section-info">
+                        Core features available on all GitHub plans
+                    </div>
+                    <div class="section-content">
+                        <!-- Collapse Toggle -->
+                        <div class="section-collapse-toggle">
+                            <span class="collapse-line"></span>
+                            <button type="button" class="collapse-chevron" aria-label="Toggle section">▼</button>
+                            <span class="collapse-line"></span>
+                        </div>
+
+                        <!-- Main content -->
+                        <div class="section-main-content">
+                        <p class="feature-description">These features are included in all GitHub plans (Free, Pro, Team, and Enterprise):</p>
+                        <div class="common-features-list">
+                            <div class="feature-category">
+                                <h4>Code Management</h4>
+                                <ul>
+                                    <li>Unlimited public repositories</li>
+                                    <li>Unlimited private repositories</li>
+                                    <li>Code reviews</li>
+                                    <li>Pull requests</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h4>Collaboration</h4>
+                                <ul>
+                                    <li>Issues and milestones</li>
+                                    <li>Projects</li>
+                                    <li>Team discussions</li>
+                                    <li>Organization and team management</li>
+                                    <li>Unlimited collaborators for public repositories</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h4>Security</h4>
+                                <ul>
+                                    <li>GitHub Security Advisories</li>
+                                    <li>Dependabot version updates</li>
+                                    <li>Dependabot security updates</li>
+                                    <li>Dependency graph</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h4>Support</h4>
+                                <ul>
+                                    <li>Community Support</li>
+                                </ul>
+                            </div>
+                        </div>
+                        </div><!-- end section-main-content -->
+                    </div>
+                </div>
+
+                </div><!-- end panel-content -->
             </div>
 
             <!-- Plan Comparison Panel -->
             <div class="panel comparison-panel">
-                <h2>Plan Comparison</h2>
+                <div class="panel-header">
+                    <h2>Plan Comparison</h2>
+                    <div class="plan-visibility-controls">
+                        <span id="unavailable-status" class="unavailable-status"></span>
+                        <a href="#" id="reset-visibility" class="reset-link">Reset</a>
+                        <div class="plan-visibility-dropdown">
+                            <button id="plan-visibility-toggle" class="plan-visibility-button">
+                                <span id="visibility-summary">All plans</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div id="plan-visibility-menu" class="plan-visibility-menu hidden">
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="free" checked>
+                                    <span>Free</span>
+                                </label>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="pro" checked>
+                                    <span>Pro</span>
+                                </label>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="team" checked>
+                                    <span>Team</span>
+                                </label>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" data-plan="enterprise" checked>
+                                    <span>Enterprise</span>
+                                </label>
+                                <div class="plan-visibility-divider"></div>
+                                <label class="plan-visibility-item">
+                                    <input type="checkbox" id="hide-unavailable-plans">
+                                    <span>Hide unavailable plans</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-content">
 
                 <div id="recommendation" class="recommendation hidden">
                     <div class="recommendation-content">
@@ -458,6 +865,8 @@
 </li>
                     </ul>
                 </div>
+
+                </div><!-- end panel-content -->
             </div>
         </div>
     </div>

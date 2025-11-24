@@ -131,6 +131,80 @@ const PRICING = {
     }
 };
 
+// GHAS feature requirements mapping
+const GHAS_REQUIREMENTS = {
+    // Secret Protection features
+    'feature-push-protection': 'secretProtection',
+    'feature-secret-scanning': 'secretProtection',
+    'feature-provider-patterns': 'secretProtection',
+    'feature-validity-checks': 'secretProtection',
+    'feature-copilot-secret-scanning': 'secretProtection',
+    'feature-generic-patterns': 'secretProtection',
+    'feature-custom-patterns': 'secretProtection',
+    'feature-push-protection-bypass': 'secretProtection',
+    'feature-security-insights': 'secretProtection',
+    'feature-scan-history-api': 'secretProtection',
+    // Code Security features
+    'feature-copilot-autofix': 'codeSecurity',
+    'feature-third-party-extensibility': 'codeSecurity',
+    'feature-contextual-vuln': 'codeSecurity',
+    'feature-codeql': 'codeSecurity',
+    'feature-security-campaigns': 'codeSecurity',
+    'feature-dependabot-custom-rules': 'codeSecurity'
+};
+
+// Feature availability by plan
+const FEATURE_AVAILABILITY = {
+    'feature-repo-rules': { free: 'public', pro: true, team: true, enterprise: true, name: 'Repository rules' },
+    'feature-code-owners': { free: 'public', pro: true, team: true, enterprise: true, name: 'Code owners' },
+    'feature-draft-pr': { free: 'public', pro: true, team: true, enterprise: true, name: 'Draft pull requests' },
+    'feature-multiple-pr-assignees': { free: 'public', pro: true, team: true, enterprise: true, name: 'Multiple PR assignees' },
+    'feature-repository-insights': { free: 'public', pro: true, team: true, enterprise: true, name: 'Repository insights' },
+    'feature-scheduled-reminders': { free: 'public', pro: true, team: true, enterprise: true, name: 'Scheduled reminders' },
+    'feature-auto-code-review': { free: 'public', pro: true, team: true, enterprise: true, name: 'Automatic code review assignment' },
+    'feature-environment-protection': { free: 'public', pro: 'public', team: 'public', enterprise: true, name: 'Environment protection rules' },
+    'feature-environment-deployment': { free: false, pro: true, team: true, enterprise: true, name: 'Environment deployment branches' },
+    'feature-multiple-reviewers': { free: false, pro: true, team: true, enterprise: true, name: 'Multiple reviewers' },
+    'feature-required-reviewers': { free: false, pro: true, team: true, enterprise: true, name: 'Required reviewers' },
+    'feature-pages-wikis': { free: 'public', pro: true, team: true, enterprise: true, name: 'Pages and wikis' },
+    'feature-multiple-issue-assignees': { free: 'public', pro: true, team: true, enterprise: true, name: 'Multiple issue assignees' },
+    'feature-push-protection': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Push protection' },
+    'feature-secret-scanning': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Secret scanning' },
+    'feature-provider-patterns': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Provider patterns' },
+    'feature-validity-checks': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Validity checks' },
+    'feature-copilot-secret-scanning': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Copilot secret scanning' },
+    'feature-generic-patterns': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Generic patterns' },
+    'feature-custom-patterns': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Custom patterns' },
+    'feature-push-protection-bypass': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Push protection bypass controls' },
+    'feature-security-insights': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Security insights' },
+    'feature-scan-history-api': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Scan history API' },
+    'feature-copilot-autofix': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Copilot Autofix' },
+    'feature-third-party-extensibility': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Third party extensibility' },
+    'feature-contextual-vuln': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Contextual vulnerability intelligence' },
+    'feature-codeql': { free: 'public', pro: 'addon', team: 'addon', enterprise: 'addon', name: 'CodeQL' },
+    'feature-security-campaigns': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Security campaigns' },
+    'feature-dependabot-custom-rules': { free: false, pro: 'addon', team: 'addon', enterprise: 'addon', name: 'Dependabot custom auto-triage rules' },
+    'feature-artifact-attestations': { free: 'public', pro: 'public', team: 'public', enterprise: true, name: 'Artifact attestations' },
+    'feature-required-2fa': { free: true, pro: true, team: true, enterprise: true, name: 'Required 2FA' },
+    'feature-audit-log': { free: false, pro: true, team: true, enterprise: true, name: 'Audit log' },
+    'feature-audit-log-api': { free: false, pro: false, team: false, enterprise: true, name: 'Audit log API' },
+    'feature-github-connect': { free: false, pro: false, team: false, enterprise: true, name: 'GitHub Connect' },
+    'feature-saml-sso': { free: false, pro: false, team: false, enterprise: true, name: 'SAML SSO' },
+    'feature-ldap': { free: false, pro: false, team: false, enterprise: 'server', name: 'LDAP' },
+    'feature-ip-allow-list': { free: false, pro: false, team: false, enterprise: 'cloud', name: 'IP allow list' },
+    'feature-data-residency': { free: false, pro: false, team: false, enterprise: true, name: 'Data residency' },
+    'feature-emu': { free: false, pro: false, team: false, enterprise: true, name: 'Enterprise Managed Users' },
+    'feature-scim': { free: false, pro: false, team: false, enterprise: true, name: 'User provisioning (SCIM)' },
+    'feature-enterprise-account': { free: false, pro: false, team: false, enterprise: true, name: 'Enterprise Account' },
+    'feature-soc-reports': { free: false, pro: false, team: false, enterprise: true, name: 'SOC1/SOC2 reports' },
+    'feature-fedramp': { free: false, pro: false, team: false, enterprise: true, name: 'FedRAMP Tailored ATO' },
+    'feature-pre-receive-hooks': { free: false, pro: false, team: false, enterprise: 'server', name: 'Pre-receive hooks' },
+    'feature-standard-support': { free: false, pro: true, team: true, enterprise: true, name: 'Standard Support' },
+    'feature-premium-support': { free: false, pro: false, team: false, enterprise: 'addon', name: 'Premium Support' },
+    'feature-invoice-billing': { free: false, pro: false, team: false, enterprise: true, name: 'Invoice billing' },
+    'feature-self-hosted': { free: false, pro: false, team: false, enterprise: 'server', name: 'Self-hosted deployment' }
+};
+
 class GitHubPricingCalculator {
     constructor() {
         this.usage = {};
@@ -183,7 +257,8 @@ class GitHubPricingCalculator {
                 } else {
                     section.classList.add('collapsed');
                 }
-                // Trigger recalculation when section is toggled
+                // Trigger validation and recalculation when section is toggled
+                this.validateFields();
                 this.calculate();
             });
         });
@@ -244,6 +319,177 @@ class GitHubPricingCalculator {
                 }
             });
         });
+
+        // Add event listeners to feature checkboxes
+        for (const featureId in FEATURE_AVAILABILITY) {
+            const checkbox = document.getElementById(featureId);
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    this.calculate();
+                });
+            }
+        }
+
+        // Initialize plan visibility controls
+        this.initPlanVisibility();
+    }
+
+    initPlanVisibility() {
+        const toggleButton = document.getElementById('plan-visibility-toggle');
+        const menu = document.getElementById('plan-visibility-menu');
+        const resetLink = document.getElementById('reset-visibility');
+        const checkboxes = menu.querySelectorAll('input[type="checkbox"]');
+        const hideUnavailableCheckbox = document.getElementById('hide-unavailable-plans');
+
+        // Load saved visibility state from localStorage
+        this.loadPlanVisibility();
+
+        // Toggle dropdown menu
+        toggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('hidden');
+            toggleButton.classList.toggle('open');
+        });
+
+        // Prevent menu from closing when clicking inside it
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !toggleButton.contains(e.target)) {
+                menu.classList.add('hidden');
+                toggleButton.classList.remove('open');
+            }
+        });
+
+        // Handle checkbox changes
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                e.stopPropagation();
+                this.updatePlanVisibility();
+                this.savePlanVisibility();
+            });
+        });
+
+        // Handle reset
+        resetLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.resetPlanVisibility();
+        });
+
+        // Initial update
+        this.updatePlanVisibility();
+    }
+
+    loadPlanVisibility() {
+        const saved = localStorage.getItem('planVisibility');
+        if (saved) {
+            try {
+                const visibility = JSON.parse(saved);
+                const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    const plan = checkbox.dataset.plan;
+                    if (plan && visibility[plan] !== undefined) {
+                        checkbox.checked = visibility[plan];
+                    }
+                });
+                // Load hide unavailable setting
+                const hideUnavailable = document.getElementById('hide-unavailable-plans');
+                if (hideUnavailable && visibility.hideUnavailable !== undefined) {
+                    hideUnavailable.checked = visibility.hideUnavailable;
+                }
+            } catch (e) {
+                console.error('Error loading plan visibility:', e);
+            }
+        }
+    }
+
+    savePlanVisibility() {
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+        const visibility = {};
+        checkboxes.forEach(checkbox => {
+            if (checkbox.dataset.plan) {
+                visibility[checkbox.dataset.plan] = checkbox.checked;
+            }
+        });
+        // Save hide unavailable setting
+        const hideUnavailable = document.getElementById('hide-unavailable-plans');
+        if (hideUnavailable) {
+            visibility.hideUnavailable = hideUnavailable.checked;
+        }
+        localStorage.setItem('planVisibility', JSON.stringify(visibility));
+    }
+
+    resetPlanVisibility() {
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = checkbox.id === 'hide-unavailable-plans' ? false : true;
+        });
+        localStorage.removeItem('planVisibility');
+        this.updatePlanVisibility();
+    }
+
+    updatePlanVisibility() {
+        const checkboxes = document.querySelectorAll('#plan-visibility-menu input[type="checkbox"][data-plan]');
+        const hideUnavailableCheckbox = document.getElementById('hide-unavailable-plans');
+        const summary = document.getElementById('visibility-summary');
+        const unavailableStatus = document.getElementById('unavailable-status');
+
+        let hiddenCount = 0;
+        const hiddenPlans = [];
+        const unavailablePlans = [];
+
+        checkboxes.forEach(checkbox => {
+            const plan = checkbox.dataset.plan;
+            const planCard = document.querySelector(`.plan-card[data-plan="${plan}"]`);
+
+            if (planCard) {
+                let shouldHide = !checkbox.checked;
+                let isUnavailable = false;
+
+                // Also hide if "hide unavailable" is checked and plan has "not-available" class
+                if (hideUnavailableCheckbox && hideUnavailableCheckbox.checked && planCard.classList.contains('not-available')) {
+                    shouldHide = true;
+                    isUnavailable = true;
+                }
+
+                if (shouldHide) {
+                    planCard.style.display = 'none';
+                    if (!checkbox.checked) {
+                        hiddenCount++;
+                        hiddenPlans.push(checkbox.nextElementSibling.textContent);
+                    } else if (isUnavailable) {
+                        unavailablePlans.push(checkbox.nextElementSibling.textContent);
+                    }
+                } else {
+                    planCard.style.display = '';
+                }
+            }
+        });
+
+        // Update summary text
+        if (hiddenCount === 0) {
+            summary.textContent = 'All plans';
+        } else if (hiddenCount === 1) {
+            summary.textContent = `${hiddenPlans[0]} hidden`;
+        } else {
+            summary.textContent = `${hiddenCount} hidden`;
+        }
+
+        // Update unavailable status text
+        if (unavailablePlans.length === 0) {
+            unavailableStatus.textContent = '';
+        } else if (unavailablePlans.length === 1) {
+            unavailableStatus.textContent = `${unavailablePlans[0]} plan hidden (Unavailable)`;
+        } else if (unavailablePlans.length === 2) {
+            unavailableStatus.textContent = `${unavailablePlans[0]} and ${unavailablePlans[1]} plans hidden (Unavailable)`;
+        } else {
+            const lastPlan = unavailablePlans.pop();
+            unavailableStatus.textContent = `${unavailablePlans.join(', ')}, and ${lastPlan} plans hidden (Unavailable)`;
+        }
     }
 
     updateSectionSummary(section) {
@@ -278,6 +524,9 @@ class GitHubPricingCalculator {
                 break;
             case 'ghas':
                 this.updateGHASSummary(summaryElement);
+                break;
+            case 'other-features':
+                this.updateOtherFeaturesSummary(summaryElement);
                 break;
             default:
                 summaryElement.textContent = 'Not configured';
@@ -432,8 +681,17 @@ class GitHubPricingCalculator {
         const committers = parseInt(document.getElementById('ghas-committers').value) || 0;
         const codeSecurity = document.getElementById('ghas-code-security').checked;
         const secretProtection = document.getElementById('ghas-secret-protection').checked;
+        const teamSize = parseInt(document.getElementById('users').value) || 1;
 
-        if (committers === 0 || (!codeSecurity && !secretProtection)) {
+        if (!codeSecurity && !secretProtection) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        // Use team size as fallback if committers not specified
+        const effectiveCommitters = (committers === 0 && (codeSecurity || secretProtection)) ? teamSize : committers;
+
+        if (effectiveCommitters === 0) {
             element.textContent = 'Not configured';
             return;
         }
@@ -442,12 +700,49 @@ class GitHubPricingCalculator {
         if (codeSecurity) products.push('Code Security');
         if (secretProtection) products.push('Secret Protection');
 
-        const committerText = committers === 1 ? 'committer' : 'committers';
-        element.textContent = `${committers} ${committerText} • ${products.join(' + ')}`;
+        const committerText = effectiveCommitters === 1 ? 'committer' : 'committers';
+        const fallbackNote = committers === 0 ? ' (using team size)' : '';
+        element.textContent = `${effectiveCommitters} ${committerText}${fallbackNote} • ${products.join(' + ')}`;
+    }
+
+    updateOtherFeaturesSummary(element) {
+        const selectedFeatures = this.getSelectedFeatures();
+
+        if (selectedFeatures.length === 0) {
+            element.textContent = 'Not configured';
+            return;
+        }
+
+        const featureText = selectedFeatures.length === 1 ? 'feature' : 'features';
+        element.textContent = `${selectedFeatures.length} ${featureText} selected`;
+    }
+
+    getSelectedFeatures() {
+        const selectedFeatures = [];
+        for (const featureId in FEATURE_AVAILABILITY) {
+            const checkbox = document.getElementById(featureId);
+            if (checkbox && checkbox.checked) {
+                selectedFeatures.push(featureId);
+            }
+        }
+        return selectedFeatures;
     }
 
     validateFields() {
         const teamSize = parseInt(document.getElementById('users').value) || 0;
+        const teamSizeInput = document.getElementById('users');
+
+        // Check if any sections are enabled but team size is not set
+        const anySectionEnabled = this.hasAnyFeaturesEnabled();
+        const teamSizeWarning = document.getElementById('team-size-warning');
+
+        if (anySectionEnabled && teamSize === 0 && teamSizeWarning) {
+            teamSizeWarning.style.display = 'block';
+            teamSizeInput.classList.add('has-warning');
+        } else if (teamSizeWarning) {
+            teamSizeWarning.style.display = 'none';
+            teamSizeInput.classList.remove('has-warning');
+        }
 
         // Validate Copilot users
         const copilotUsersInput = document.getElementById('copilot-users');
@@ -807,6 +1102,7 @@ class GitHubPricingCalculator {
         const lfsEnabled = document.getElementById('toggle-lfs').checked;
         const codespacesEnabled = document.getElementById('toggle-codespaces').checked;
         const ghasEnabled = document.getElementById('toggle-ghas').checked;
+        const otherFeaturesEnabled = document.getElementById('toggle-other-features').checked;
 
         // Get runner configs only if Actions is enabled
         const runnerConfigs = actionsEnabled ? this.runners.map(runnerId => {
@@ -838,8 +1134,18 @@ class GitHubPricingCalculator {
         const copilotPlanRadio = copilotEnabled ? document.querySelector('input[name="copilot-plan"]:checked') : null;
         const copilotPlan = copilotPlanRadio ? copilotPlanRadio.value : null;
 
+        const users = parseInt(document.getElementById('users').value) || 1;
+        const ghasCommittersInput = ghasEnabled ? (parseInt(document.getElementById('ghas-committers').value) || 0) : 0;
+        const ghasCodeSecurityChecked = ghasEnabled ? document.getElementById('ghas-code-security').checked : false;
+        const ghasSecretProtectionChecked = ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false;
+
+        // Use team size as fallback for GHAS committers if not specified but GHAS is enabled
+        const effectiveGhasCommitters = (ghasEnabled && (ghasCodeSecurityChecked || ghasSecretProtectionChecked) && ghasCommittersInput === 0)
+            ? users
+            : ghasCommittersInput;
+
         return {
-            users: parseInt(document.getElementById('users').value) || 1,
+            users: users,
             copilotPlan: copilotPlan,
             copilotUsers: copilotEnabled ? (parseInt(document.getElementById('copilot-users').value) || 0) : 0,
             copilotOverageRequests: copilotEnabled ? (parseInt(document.getElementById('copilot-overage-requests').value) || 0) : 0,
@@ -852,9 +1158,11 @@ class GitHubPricingCalculator {
             codespaces: codespaceConfigs,
             storedCodespaces: codespacesEnabled ? (parseFloat(document.getElementById('stored-codespaces').value) || 0) : 0,
             avgProjectSize: codespacesEnabled ? (parseFloat(document.getElementById('avg-project-size').value) || 0) : 0,
-            ghasCommitters: ghasEnabled ? (parseInt(document.getElementById('ghas-committers').value) || 0) : 0,
-            ghasCodeSecurity: ghasEnabled ? document.getElementById('ghas-code-security').checked : false,
-            ghasSecretProtection: ghasEnabled ? document.getElementById('ghas-secret-protection').checked : false
+            ghasCommitters: effectiveGhasCommitters,
+            ghasCommittersSpecified: ghasCommittersInput > 0,
+            ghasCodeSecurity: ghasCodeSecurityChecked,
+            ghasSecretProtection: ghasSecretProtectionChecked,
+            selectedFeatures: otherFeaturesEnabled ? this.getSelectedFeatures() : []
         };
     }
 
@@ -915,6 +1223,40 @@ class GitHubPricingCalculator {
         if (planKey === 'pro' && usage.users > 1) {
             breakdown.canSupport = false;
             breakdown.reasons.push(`Pro plan only supports 1 user (you have ${usage.users} users)`);
+        }
+
+        // GitHub Advanced Security is only available in Team and Enterprise plans
+        const ghasEnabled = usage.ghasCommitters > 0 && (usage.ghasCodeSecurity || usage.ghasSecretProtection);
+        if ((planKey === 'free' || planKey === 'pro') && ghasEnabled) {
+            breakdown.canSupport = false;
+            breakdown.reasons.push('GitHub Advanced Security is only available in Team and Enterprise plans');
+        }
+
+        // Validate selected features against plan availability
+        if (usage.selectedFeatures && usage.selectedFeatures.length > 0) {
+            const unsupportedFeatures = [];
+
+            usage.selectedFeatures.forEach(featureId => {
+                const feature = FEATURE_AVAILABILITY[featureId];
+                if (!feature) return;
+
+                const availability = feature[planKey];
+
+                // Feature not available at all for this plan
+                if (availability === false) {
+                    unsupportedFeatures.push(feature.name);
+                }
+                // Note: 'public' features are treated as available with a caveat, not as unavailable
+            });
+
+            if (unsupportedFeatures.length > 0) {
+                breakdown.canSupport = false;
+                const featureList = unsupportedFeatures.slice(0, 3).join(', ');
+                const remaining = unsupportedFeatures.length - 3;
+                breakdown.reasons.push(
+                    `Missing features: ${featureList}${remaining > 0 ? ` and ${remaining} more` : ''}`
+                );
+            }
         }
 
         // GitHub Copilot calculation
@@ -1156,10 +1498,28 @@ class GitHubPricingCalculator {
 
         let bestPlan = null;
         let lowestCost = Infinity;
+        let bestIncludedFeatureCount = -1;
 
         availablePlans.forEach(([planKey, breakdown]) => {
-            if (breakdown.totalCost < lowestCost) {
+            // Count fully included features (no caveats or add-ons)
+            let includedFeatureCount = 0;
+            if (this.usage.selectedFeatures && this.usage.selectedFeatures.length > 0) {
+                this.usage.selectedFeatures.forEach(featureId => {
+                    const feature = FEATURE_AVAILABILITY[featureId];
+                    if (feature && feature[planKey] === true) {
+                        includedFeatureCount++;
+                    }
+                });
+            }
+
+            // Price is primary factor, feature inclusion is tie-breaker
+            const isBetter =
+                breakdown.totalCost < lowestCost ||
+                (breakdown.totalCost === lowestCost && includedFeatureCount > bestIncludedFeatureCount);
+
+            if (isBetter) {
                 lowestCost = breakdown.totalCost;
+                bestIncludedFeatureCount = includedFeatureCount;
                 bestPlan = planKey;
             }
         });
@@ -1202,7 +1562,8 @@ class GitHubPricingCalculator {
                document.getElementById('toggle-packages').checked ||
                document.getElementById('toggle-lfs').checked ||
                document.getElementById('toggle-codespaces').checked ||
-               document.getElementById('toggle-ghas').checked;
+               document.getElementById('toggle-ghas').checked ||
+               document.getElementById('toggle-other-features').checked;
     }
 
     renderResults(bestPlan) {
@@ -1210,14 +1571,32 @@ class GitHubPricingCalculator {
         plansGrid.innerHTML = '';
 
         const recommendation = document.getElementById('recommendation');
+        const teamSize = parseInt(document.getElementById('users').value) || 0;
+        const hasFeatures = this.hasAnyFeaturesEnabled();
+
+        // Show empty state if no team size and no features enabled
+        if (teamSize === 0 && !hasFeatures) {
+            plansGrid.innerHTML = `
+                <div class="empty-state">
+                    <svg class="empty-state-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        <path d="M9 12h6m-6 4h6"></path>
+                    </svg>
+                    <h3>Get Started</h3>
+                    <p>Enter your team size and enable features to compare GitHub plans</p>
+                </div>
+            `;
+            recommendation.classList.add('hidden');
+            return;
+        }
 
         // Only show recommendation if bestPlan exists AND at least one feature is enabled
-        if (bestPlan && this.hasAnyFeaturesEnabled()) {
+        if (bestPlan && hasFeatures) {
             const recommendationText = document.getElementById('recommendation-text');
             const planName = PRICING.plans[bestPlan].name;
             const totalCost = this.results[bestPlan].totalCost;
 
-            recommendationText.textContent = `Based on your usage, the ${planName} plan is most cost-effective at $${totalCost.toFixed(2)}/month.`;
+            recommendationText.textContent = `Based on your usage, the ${planName} plan is most cost-effective at $${totalCost.toFixed(2)} / month.`;
             recommendation.classList.remove('hidden');
         } else {
             // Hide recommendation if no features are enabled
@@ -1225,18 +1604,33 @@ class GitHubPricingCalculator {
         }
 
         // Render each plan card
+        const hasRecommendation = bestPlan && hasFeatures;
         for (const [planKey, breakdown] of Object.entries(this.results)) {
             const plan = PRICING.plans[planKey];
-            const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey);
+            const card = this.createPlanCard(planKey, plan, breakdown, bestPlan === planKey, hasRecommendation);
             plansGrid.appendChild(card);
         }
+
+        // Apply saved visibility state
+        this.updatePlanVisibility();
     }
 
-    createPlanCard(planKey, plan, breakdown, isBest) {
+    getPlanIcon(planKey) {
+        const icons = {
+            free: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>',
+            pro: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
+            team: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+            enterprise: '<svg class="plan-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><line x1="8" y1="6" x2="8" y2="6" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="6" x2="12" y2="6" stroke-width="2" stroke-linecap="round"></line><line x1="16" y1="6" x2="16" y2="6" stroke-width="2" stroke-linecap="round"></line><line x1="8" y1="10" x2="8" y2="10" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="10" x2="12" y2="10" stroke-width="2" stroke-linecap="round"></line><line x1="16" y1="10" x2="16" y2="10" stroke-width="2" stroke-linecap="round"></line><line x1="8" y1="14" x2="8" y2="14" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="14" x2="12" y2="14" stroke-width="2" stroke-linecap="round"></line><line x1="16" y1="14" x2="16" y2="14" stroke-width="2" stroke-linecap="round"></line></svg>'
+        };
+        return icons[planKey] || '';
+    }
+
+    createPlanCard(planKey, plan, breakdown, isBest, hasRecommendation) {
         const card = document.createElement('div');
         card.className = 'plan-card';
+        card.dataset.plan = planKey;
 
-        if (isBest && breakdown.canSupport) {
+        if (isBest && breakdown.canSupport && hasRecommendation) {
             card.classList.add('recommended');
         }
 
@@ -1245,7 +1639,7 @@ class GitHubPricingCalculator {
         }
 
         let badgeHtml = '';
-        if (isBest && breakdown.canSupport) {
+        if (isBest && breakdown.canSupport && hasRecommendation) {
             badgeHtml = '<span class="plan-badge best-value">Best Value</span>';
         } else if (!breakdown.canSupport) {
             badgeHtml = '<span class="plan-badge not-available">Not Available</span>';
@@ -1260,15 +1654,13 @@ class GitHubPricingCalculator {
 
         let costBreakdownHtml = '';
 
-        // Base cost
-        if (breakdown.baseCost > 0) {
-            costBreakdownHtml += `
-                <div class="cost-item">
-                    <span class="cost-label">Base Cost (${this.usage.users} user${this.usage.users > 1 ? 's' : ''})</span>
-                    <span class="cost-value">${isProUserLimit ? 'N/A' : '$' + breakdown.baseCost.toFixed(2)}</span>
-                </div>
-            `;
-        }
+        // Base cost - always show, even for free plan
+        costBreakdownHtml += `
+            <div class="cost-item">
+                <span class="cost-label">Base Cost (${this.usage.users} user${this.usage.users > 1 ? 's' : ''})</span>
+                <span class="cost-value">${isProUserLimit ? 'N/A' : '$' + breakdown.baseCost.toFixed(2)}</span>
+            </div>
+        `;
 
         // Copilot
         if (breakdown.copilotDetails.plan) {
@@ -1351,15 +1743,15 @@ class GitHubPricingCalculator {
             const details = breakdown.lfsDetails;
             costBreakdownHtml += `
                 <div class="cost-item">
-                    <span class="cost-label">LFS Storage (${details.storageUsed} GiB / ${details.storageIncluded} GiB free)</span>
+                    <span class="cost-label">LFS Storage (${details.storageUsed} GiB / ${details.storageIncluded} GiB included)</span>
                     <span class="cost-value ${details.storageOverage > 0 ? 'overage' : 'included'}">
-                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included in free tier'}
+                        ${details.storageOverage > 0 ? '+$' + (details.storageOverage * PRICING.lfs.storageOverage).toFixed(2) : 'Included'}
                     </span>
                 </div>
                 <div class="cost-item">
-                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GiB / ${details.bandwidthIncluded} GiB free)</span>
+                    <span class="cost-label">LFS Bandwidth (${details.bandwidthUsed} GiB / ${details.bandwidthIncluded} GiB included)</span>
                     <span class="cost-value ${details.bandwidthOverage > 0 ? 'overage' : 'included'}">
-                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included in free tier'}
+                        ${details.bandwidthOverage > 0 ? '+$' + (details.bandwidthOverage * PRICING.lfs.bandwidthOverage).toFixed(2) : 'Included'}
                     </span>
                 </div>
             `;
@@ -1398,10 +1790,14 @@ class GitHubPricingCalculator {
         // GitHub Advanced Security
         if (breakdown.ghasDetails.committers > 0) {
             const details = breakdown.ghasDetails;
+            const committerLabel = this.usage.ghasCommittersSpecified
+                ? `${details.committers} committers`
+                : `${details.committers} committers (using team size)`;
+
             if (details.codeSecurity) {
                 costBreakdownHtml += `
                     <div class="cost-item">
-                        <span class="cost-label">GHAS Code Security (${details.committers} committers)</span>
+                        <span class="cost-label">GHAS Code Security (${committerLabel})</span>
                         <span class="cost-value overage">$${details.codeSecurityCost.toFixed(2)}</span>
                     </div>
                 `;
@@ -1409,11 +1805,74 @@ class GitHubPricingCalculator {
             if (details.secretProtection) {
                 costBreakdownHtml += `
                     <div class="cost-item">
-                        <span class="cost-label">GHAS Secret Protection (${details.committers} committers)</span>
+                        <span class="cost-label">GHAS Secret Protection (${committerLabel})</span>
                         <span class="cost-value overage">$${details.secretProtectionCost.toFixed(2)}</span>
                     </div>
                 `;
             }
+        }
+
+        // Other Features
+        if (this.usage.selectedFeatures && this.usage.selectedFeatures.length > 0) {
+            this.usage.selectedFeatures.forEach(featureId => {
+                const feature = FEATURE_AVAILABILITY[featureId];
+                if (!feature) return;
+
+                const availability = feature[planKey];
+                let statusText = '';
+                let statusClass = 'included';
+
+                if (availability === false) {
+                    statusText = 'Not available';
+                    statusClass = 'exceeded';
+                } else if (availability === true) {
+                    statusText = 'Included';
+                    statusClass = 'included';
+                } else if (availability === 'public') {
+                    if (this.usage.publicRepos) {
+                        statusText = 'Included';
+                        statusClass = 'included';
+                    } else {
+                        statusText = 'Public repos only';
+                        statusClass = 'exceeded';
+                    }
+                } else if (availability === 'addon') {
+                    // Check if this feature requires GHAS
+                    const ghasRequirement = GHAS_REQUIREMENTS[featureId];
+                    if (ghasRequirement) {
+                        const ghasEnabled = ghasRequirement === 'secretProtection'
+                            ? this.usage.ghasSecretProtection
+                            : this.usage.ghasCodeSecurity;
+
+                        if (ghasEnabled) {
+                            statusText = 'Included';
+                            statusClass = 'included';
+                        } else {
+                            const requirementName = ghasRequirement === 'secretProtection'
+                                ? 'Secret Protection'
+                                : 'Code Security';
+                            statusText = `Requires ${requirementName}`;
+                            statusClass = 'overage';
+                        }
+                    } else {
+                        statusText = 'Add-on required';
+                        statusClass = 'overage';
+                    }
+                } else if (availability === 'server') {
+                    statusText = 'Enterprise Server only';
+                    statusClass = 'overage';
+                } else if (availability === 'cloud') {
+                    statusText = 'Enterprise Cloud only';
+                    statusClass = 'overage';
+                }
+
+                costBreakdownHtml += `
+                    <div class="cost-item">
+                        <span class="cost-label">${feature.name}</span>
+                        <span class="cost-value ${statusClass}">${statusText}</span>
+                    </div>
+                `;
+            });
         }
 
         let unavailableReason = '';
@@ -1427,21 +1886,25 @@ class GitHubPricingCalculator {
 
         card.innerHTML = `
             <div class="plan-header">
-                <h3 class="plan-name">${plan.name}</h3>
+                <h3 class="plan-name">${this.getPlanIcon(planKey)}${plan.name}</h3>
                 ${badgeHtml}
             </div>
-            <div class="plan-base-cost">
-                <div class="base-cost-label">Base Plan Cost</div>
-                <div class="base-cost-amount">${baseCostDisplay}<span class="period">/month</span></div>
-            </div>
+            ${breakdown.canSupport ? `
+                <div class="plan-base-cost">
+                    <div class="base-cost-label">Base Plan Cost</div>
+                    <div class="base-cost-amount">${baseCostDisplay}<span class="period"> / month</span></div>
+                </div>
+            ` : ''}
             ${unavailableReason}
-            <div class="cost-breakdown">
-                ${costBreakdownHtml}
-            </div>
-            <div class="total-cost">
-                <span class="total-label">Total Monthly Cost</span>
-                <span class="total-value">${isProUserLimit ? 'N/A' : '$' + breakdown.totalCost.toFixed(2)}</span>
-            </div>
+            ${breakdown.canSupport ? `
+                <div class="cost-breakdown">
+                    ${costBreakdownHtml}
+                </div>
+                <div class="total-cost">
+                    <span class="total-label">Total Monthly Cost</span>
+                    <span class="total-value">$${breakdown.totalCost.toFixed(2)}</span>
+                </div>
+            ` : ''}
         `;
 
         return card;
