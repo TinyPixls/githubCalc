@@ -1654,15 +1654,13 @@ class GitHubPricingCalculator {
 
         let costBreakdownHtml = '';
 
-        // Base cost
-        if (breakdown.baseCost > 0) {
-            costBreakdownHtml += `
-                <div class="cost-item">
-                    <span class="cost-label">Base Cost (${this.usage.users} user${this.usage.users > 1 ? 's' : ''})</span>
-                    <span class="cost-value">${isProUserLimit ? 'N/A' : '$' + breakdown.baseCost.toFixed(2)}</span>
-                </div>
-            `;
-        }
+        // Base cost - always show, even for free plan
+        costBreakdownHtml += `
+            <div class="cost-item">
+                <span class="cost-label">Base Cost (${this.usage.users} user${this.usage.users > 1 ? 's' : ''})</span>
+                <span class="cost-value">${isProUserLimit ? 'N/A' : '$' + breakdown.baseCost.toFixed(2)}</span>
+            </div>
+        `;
 
         // Copilot
         if (breakdown.copilotDetails.plan) {
